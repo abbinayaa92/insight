@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/Friendwrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp" >
+
+     <!--   <EditText
+            android:id="@+id/FriendSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Type to search friends"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />  -->
+       <Button
+        android:id="@+id/ImportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="54dp"
+        android:layout_marginTop="21dp"
+        android:background="#ffffff"
+        android:text="Sync Google Friends"
+        android:textColor="#05261f"
+        android:textSize="30sp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/FriendList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"/>
+
+</LinearLayout>

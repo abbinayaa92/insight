@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/Eventwrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp" >
+
+    <EditText
+            android:id="@+id/EventSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Type to search Events"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:textSize="20sp" /> 
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/EventList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp" />
+        <!--  android:cacheColorHint="@android:color/transparent"--> 
+
+</LinearLayout>
