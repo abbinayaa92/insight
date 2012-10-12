@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:orientation="vertical" >
+    
+    <QuickContactBadge
+        android:id="@+id/quickContactBadge1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+<View
+    android:id="@+id/separator"
+    android:layout_width="fill_parent"
+    android:layout_height="1dip"
+    android:layout_alignParentTop="true"
+    android:layout_centerVertical="true"
+    android:layout_margin="5dp"
+    android:background="#ffffff" />
+
+    <TextView
+        android:id="@+id/Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+        android:id="@+id/mobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mobile"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="email @address"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:background="#ffffff" />
+    
+    <com.google.android.maps.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="186dp"
+        android:apiKey="0eqQK2dZVSM9_30dZvwrCPWgaQVZekSxT1-Q9-A"
+        android:clickable="true" />
+
+</LinearLayout>

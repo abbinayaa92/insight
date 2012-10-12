@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="title" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="description" />
+
+    <ExpandableListView
+        android:id="@+id/Venue"
+        android:layout_width="match_parent"
+        android:layout_height="60dp" >
+
+    </ExpandableListView>
+    
+    <DatePicker android:id="@+id/datepicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TimePicker
+        android:id="@+id/timePicker1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save" />
+
+</LinearLayout>
