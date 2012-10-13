@@ -92,10 +92,11 @@ private class GetContacts extends AsyncTask<Context, String, List<String>> {
          	JSONObject jsonResponse = new JSONObject(jsonOutput);
         	JSONObject m = (JSONObject)jsonResponse.get("feed");
         	JSONArray entries =(JSONArray)m.getJSONArray("entry");
+        	Log.d("JSON entries",entries.toString());
         	for (int i=0 ; i<entries.length() ; i++) {
         		JSONObject entry = entries.getJSONObject(i);
         		JSONObject title = entry.getJSONObject("title");
-        		//Log.d("JSON title",title.getString("$t"));
+        		
         		//contactList.add("A");
         		//if (title.getString("$t")!=null && title.getString("$t").length()>0) {
         			contactList.add(title.getString("$t"));
