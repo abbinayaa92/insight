@@ -12,23 +12,15 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="5dp" >
 
-     <!--   <EditText
+     <EditText
             android:id="@+id/FriendSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Type to search friends"
             android:singleLine="true"
             android:textColor="#ffffff"
-            android:textSize="20sp" />  -->
-       <Button
-        android:id="@+id/ImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="54dp"
-        android:layout_marginTop="21dp"
-        android:background="#ffffff"
-        android:text="Sync Google Friends"
-        android:textColor="#05261f"
-        android:textSize="30sp" />
+            android:textSize="20sp" /> 
+     
     </LinearLayout>
 
     <ListView

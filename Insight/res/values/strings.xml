@@ -17,5 +17,7 @@
     <string name="desc">Description</string>
     <string name="title_activity_event_form">EventForm</string>
     <string name="create">Create</string>
+    <string name="dateSliderTitle">Selected date</string>
+    <string name="title_activity_home">HomeActivity</string>
 
 </resources>

@@ -181,7 +181,7 @@ private class RetrieveAccessToken extends AsyncTask<Context, String, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
             if (result) {
-            	context.startActivity(new Intent(context ,MainActivity.class));
+            	context.startActivity(new Intent(context ,HomeActivity.class));
             } else {
                   
             }

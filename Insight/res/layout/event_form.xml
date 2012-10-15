@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     android:layout_margin="10dp"
     android:orientation="vertical" >
-
+
     <EditText
-        android:id="@+id/title"
+        android:id="@+id/newEventTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -14,30 +14,32 @@
 
         <requestFocus />
     </EditText>
-
+    
     <EditText
-        android:id="@+id/desc"
+        android:id="@+id/newEventDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="description" />
-
-    <ExpandableListView
-        android:id="@+id/Venue"
+        android:hint="description" />
+    <EditText
+        android:id="@+id/newEventVenue"
         android:layout_width="match_parent"
         android:layout_height="60dp" >
-
-    </ExpandableListView>
+    </EditText>
     
-    <DatePicker android:id="@+id/datepicker"
+    
+    <EditText
+        android:id="@+id/newEventDate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Date"/>
+    
     <TimePicker
-        android:id="@+id/timePicker1"
+        android:id="@+id/newEventTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+    
     <Button
         android:id="@+id/AddEvent"
         android:layout_width="match_parent"

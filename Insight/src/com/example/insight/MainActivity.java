@@ -1,47 +1,64 @@
 package com.example.insight;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
 public class MainActivity extends Activity {
 
-	LocalActivityManager mLocalActivityManager;
+	EditText email;
+	Button Login;
+	private SharedPreferences prefs;
     
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        TabHost tabHost = (TabHost)findViewById(R.id.tabhost);
-        mLocalActivityManager = new LocalActivityManager(this, false);
-        mLocalActivityManager.dispatchCreate(savedInstanceState);
-        tabHost.setup(mLocalActivityManager);
-        // Tab for Photos
-        TabSpec eventspec = tabHost.newTabSpec("Events");
-        // setting Title and Icon for the Tab
-        eventspec.setIndicator("Events");
-        //, getResources().getDrawable(R.drawable.icon_photos_tab));
-        Intent eventIntent = new Intent(this, EventActivity.class);
-        eventspec.setContent(eventIntent);
- 
-        // Tab for Songs
-        TabSpec friendspec = tabHost.newTabSpec("Friends");
-        friendspec.setIndicator("Friends");
-        //, getResources().getDrawable(R.drawable.icon_songs_tab));
-        Intent friendIntent = new Intent(this, FriendActivity.class);
-        friendspec.setContent(friendIntent);
- 
-      
-        // Adding all TabSpec to TabHost
-        tabHost.addTab(eventspec); // Adding photos tab
-        tabHost.addTab(friendspec); // Adding songs tab
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
+        email= (EditText) findViewById(R.id.LoginEmail);
+        Login =(Button) findViewById(R.id.LoginButton);
+        Login.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	if(isOAuthSuccessful())
+            		startActivity(new Intent().setClass(v.getContext(), HomeActivity.class));
+            	else
+            		startActivity(new Intent().setClass(v.getContext(), RequestTokenActivity.class));
+            }
+        });
+        
     }
 
     @Override
@@ -50,11 +67,17 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            mLocalActivityManager.dispatchResume();
-        } catch (Exception e) {}
+    private boolean isOAuthSuccessful() {
+    	String token = prefs.getString(OAuth.OAUTH_TOKEN, null);
+		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, null);
+		if (token != null && secret != null)
+		{
+			Log.d("aoth token",token);
+			return true;
+		}
+		else 
+			return false;
     }
+   
+    
 }

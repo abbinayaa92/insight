@@ -1,6 +1,7 @@
 package com.example.insight;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -11,27 +12,43 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TimePicker;
+
+import com.example.insight.datepicker.DateSlider;
+import com.example.insight.datepicker.DefaultDateSlider;
 
 public class EventForm extends Activity {
 
 	Button addevent;
+	EditText title, desc, venue,date;
+	TimePicker time;
 	Context context;
 	Activity callingActivity;
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/events_add.php";
 	private static final String TAG_SUCCESS = "success";
+	static final int DEFAULTDATESELECTOR_ID = 0;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context =this;
+        callingActivity =this;
         setContentView(R.layout.event_form);
         addevent=(Button)findViewById(R.id.AddEvent);
+        title= (EditText) findViewById(R.id.newEventTitle);
+        desc= (EditText) findViewById(R.id.newEventDesc);
+        venue= (EditText) findViewById(R.id.newEventVenue);
+        date= (EditText) findViewById(R.id.newEventDate);
+        time= (TimePicker) findViewById(R.id.newEventTime);
        
         addevent.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -39,7 +56,32 @@ public class EventForm extends Activity {
         		newevent.execute();
             } 
         });
+        
+        date.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				showDialog(DEFAULTDATESELECTOR_ID);
+			}
+
+		});
+
     }
+    
+    private final DateSlider.OnDateSetListener mDateSetListener = new DateSlider.OnDateSetListener() {
+		public void onDateSet(DateSlider view, Calendar selectedDate) {
+			date.setText(selectedDate.get(Calendar.YEAR) + "-" + (selectedDate.get(Calendar.MONTH) + 1) + "-" + selectedDate.get(Calendar.DATE));
+		}
+	};
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+
+		switch (id) {
+		case DEFAULTDATESELECTOR_ID:
+			final Calendar c = Calendar.getInstance();
+			return new DefaultDateSlider(this, mDateSetListener, c);
+		}
+		return null;
+	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -63,14 +105,14 @@ public class EventForm extends Activity {
 	            // Building Parameters
 	            List<NameValuePair> params = new ArrayList<NameValuePair>();
 	            //put the appropriate textbox content instead of the actual strings entered here
-	            params.add(new BasicNameValuePair("title", "testing testing events")); //put the text of the title textbox here instead of "teting testing events"
-	            params.add(new BasicNameValuePair("description", "checking and testing"));
-	            params.add(new BasicNameValuePair("date", "2013-02-11"));
-	            params.add(new BasicNameValuePair("time", "05:00:00"));
-	            params.add(new BasicNameValuePair("venue", "com1"));
+	            params.add(new BasicNameValuePair("title", title.getText().toString())); //put the text of the title textbox here instead of "teting testing events"
+	            params.add(new BasicNameValuePair("description", desc.getText().toString()));
+	            params.add(new BasicNameValuePair("date", date.getText().toString()));
+	            params.add(new BasicNameValuePair("time", "00:00"));
+	            params.add(new BasicNameValuePair("venue", venue.getText().toString()));
 	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
-	            params.add(new BasicNameValuePair("coorx", "22.5"));
-	            params.add(new BasicNameValuePair("coory", "46.8"));
+	            params.add(new BasicNameValuePair("coorx", "0"));
+	            params.add(new BasicNameValuePair("coory", "0"));
 	 
 	            // getting JSON Object
 	            // Note that create product url accepts POST method
@@ -82,7 +124,8 @@ public class EventForm extends Activity {
 	            int success;
 				try {
 					success = json.getInt(TAG_SUCCESS);
-					 return Integer.toString(success);
+					return Integer.toString(success);
+					 
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -105,6 +148,9 @@ public class EventForm extends Activity {
                     // failed to create product
                 	Log.d("result","failure");
                 }
+                Intent eventsViewIntent = new Intent(context, HomeActivity.class);
+				callingActivity.startActivity(eventsViewIntent);
+				callingActivity.finish();
 		}
 	}
 }
