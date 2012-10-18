@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ToggleButton
+        android:id="@+id/tbServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="Server On"
+        android:textOff="Server Off" />
+
+    <Button
+        android:id="@+id/bStart"
+        android:layout_width="154dp"
+        android:layout_height="wrap_content"
+        android:text="Start" />
+
+    <Button
+        android:id="@+id/bStop"
+        android:layout_width="152dp"
+        android:layout_height="wrap_content"
+        android:text="Stop" />
+   <TextView
+        android:id="@+id/sampleSize"
+        android:layout_width="148dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.01"
+        android:text="Sample Size 0"
+       />
+
+   <Spinner
+       android:id="@+id/model"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" 
+       
+       />
+
+   <Spinner
+       android:id="@+id/maps"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+      />
+
+   <Spinner
+       android:id="@+id/samples_tocollect"
+       android:layout_width="148dp"
+       android:layout_height="wrap_content"
+       android:entries="@array/samples" />
+  <TextView
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.09"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+       
+        />
+
+</LinearLayout>

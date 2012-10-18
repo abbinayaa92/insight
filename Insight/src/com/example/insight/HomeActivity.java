@@ -23,20 +23,28 @@ import com.example.insight.EventForm.addTest;
 import com.example.insight.datamodel.Friend;
 import com.example.insight.datamodel.FriendList;
 import com.example.insight.datamodel.InsightGlobalState;
+import com.google.android.maps.GeoPoint;
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.LocalActivityManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 
 public class HomeActivity extends Activity {
@@ -90,8 +98,12 @@ public class HomeActivity extends Activity {
         tabHost.addTab(eventspec); // Adding photos tab
         tabHost.addTab(friendspec); // Adding songs tab
         
+       
+		
         addUser newevent = new addUser(context, currentActivity);
 		newevent.execute();
+		
+		
     }
     
 
@@ -268,6 +280,7 @@ public class HomeActivity extends Activity {
         	}
     	}
         
+      
         private boolean isOAuthSuccessful() {
         	String token = prefs.getString(OAuth.OAUTH_TOKEN, null);
     		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, null);

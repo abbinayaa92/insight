@@ -11,8 +11,11 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -31,8 +34,11 @@ import org.json.JSONObject;
 import com.example.insight.datamodel.Event;
 import com.example.insight.datamodel.Eventlist;
 import com.example.insight.datamodel.InsightGlobalState;
+import com.google.android.maps.GeoPoint;
 import com.google.gson.Gson;
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -40,10 +46,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 
@@ -71,6 +79,16 @@ public class EventActivity extends Activity {
         Create=(Button)findViewById(R.id.create_event);
         eventListView=(ListView)findViewById(R.id.EventList);
         
+        registerReceiver(broadcastReceiver, new IntentFilter("FingerPrint_LOCATION_UPDATE"));
+        LocationManager myManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		Location myLocation = myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		GeoPoint myPosition;
+		if (myLocation == null)
+			myPosition = new GeoPoint(1294949, 103773838); // default COM1
+															// location
+		else
+			myPosition = new GeoPoint((int) (myLocation.getLatitude() * 1E6), (int) (myLocation.getLongitude() * 1E6));
+		
         Create.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(context,EventForm.class));
@@ -118,7 +136,64 @@ public class EventActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_event, menu);
         return true;
     }
+
     
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.setting:
+			startActivity(new Intent(context, FingerPrintActivity.class));
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+    
+    protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		registerReceiver(broadcastReceiver, new IntentFilter("FingerPrint_LOCATION_UPDATE"));
+    }
+    
+    public void onPause() {
+		super.onPause();
+		unregisterReceiver(broadcastReceiver);
+	}
+
+	@Override
+	public void onDestroy() {
+		stopService(new Intent(this.getApplicationContext(), FingerPrintService.class));
+		SharedPreferences config = getSharedPreferences("FingerPrint", MODE_PRIVATE);
+		SharedPreferences.Editor editor = config.edit();
+		editor.putBoolean("started", false);
+		editor.commit();
+		super.onDestroy();
+	}
+    
+ // listen for user location change
+	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String result = intent.getStringExtra("location");
+			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			Log.d("result from server", result);
+
+			// WRITE CODES HERE
+			// Hint 1: You need to populate the attributes of the floor object
+			// with data received from broadcast
+			
+
+			// Hint 2: You need to populate the indoorPosition with data
+			// received from broadcast
+			int coorx = intent.getIntExtra("coorX", 0);
+			int coory = intent.getIntExtra("coorY", 0);
+			Log.d("positions x", Integer.toString(coorx));
+			Log.d("positions y", Integer.toString(coory));
+
+		}
+	};
+	
     public class Test extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
