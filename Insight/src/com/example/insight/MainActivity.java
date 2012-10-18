@@ -16,6 +16,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.example.insight.datamodel.InsightGlobalState;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -40,6 +42,7 @@ public class MainActivity extends Activity {
 	EditText email;
 	Button Login;
 	private SharedPreferences prefs;
+	private InsightGlobalState globalState;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,15 +50,23 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
+        globalState= (InsightGlobalState)getApplication();
         email= (EditText) findViewById(R.id.LoginEmail);
         Login =(Button) findViewById(R.id.LoginButton);
         Login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	String loginmail=email.getText().toString();
+            	if(!(loginmail.equals("")))
+            	{
+            		globalState.setEmail(loginmail);
+            	
             	if(isOAuthSuccessful())
             		startActivity(new Intent().setClass(v.getContext(), HomeActivity.class));
             	else
             		startActivity(new Intent().setClass(v.getContext(), RequestTokenActivity.class));
+            	}
+            	else
+            		Log.d("error","empty login email");
             }
         });
         

@@ -4,6 +4,8 @@ import android.app.Application;
 
 public class InsightGlobalState extends Application {
 
+	private String email;
+	private String id;
 	private Eventlist eventlist= new Eventlist();
 	private Event events= new Event();
 	private FriendList friendlist= new FriendList();
@@ -32,5 +34,17 @@ public class InsightGlobalState extends Application {
 	}
 	public void setFriends(Friend friends) {
 		this.friends = friends;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 }

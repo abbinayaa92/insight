@@ -11,11 +11,15 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.insight.EventForm.addTest;
 import com.example.insight.datamodel.Friend;
 import com.example.insight.datamodel.FriendList;
 import com.example.insight.datamodel.InsightGlobalState;
@@ -46,6 +50,9 @@ public class HomeActivity extends Activity {
 	private InsightGlobalState globalState;
 	private ArrayList<Friend> contactlist;
 	private FriendList friendlist;
+	JSONParser jsonParser = new JSONParser();
+	private String url = "http://137.132.82.133/pg2/users_add.php";
+	private static final String TAG_SUCCESS = "success";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +89,9 @@ public class HomeActivity extends Activity {
         // Adding all TabSpec to TabHost
         tabHost.addTab(eventspec); // Adding photos tab
         tabHost.addTab(friendspec); // Adding songs tab
+        
+        addUser newevent = new addUser(context, currentActivity);
+		newevent.execute();
     }
     
 
@@ -177,7 +187,70 @@ public class HomeActivity extends Activity {
     		else
     		Log.d("error contact list size 0","");
     	}
-    }    
+    }  
+    
+    public class addUser extends AsyncTask<String, Void, String> {
+		private final Context context;
+		private final Activity callingActivity;
+
+		public addUser(Context context, Activity callingActivity) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+		}
+
+		
+		 protected String doInBackground(String... args) {
+	          
+	 
+	            // Building Parameters
+	            List<NameValuePair> params = new ArrayList<NameValuePair>();
+	            //put the appropriate textbox content instead of the actual strings entered here
+	            params.add(new BasicNameValuePair("email", globalState.getEmail())); //put the text of the title textbox here instead of "teting testing events"
+	            params.add(new BasicNameValuePair("event_id", "0"));
+	            params.add(new BasicNameValuePair("time", "00:00"));
+	            params.add(new BasicNameValuePair("friends[0]", "adsf@asdf.com"));
+	            params.add(new BasicNameValuePair("friends[1]", "helo@abc.com"));
+	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
+	            params.add(new BasicNameValuePair("coorx", "0"));
+	            params.add(new BasicNameValuePair("coory", "0"));
+	 
+	            // getting JSON Object
+	            // Note that create product url accepts POST method
+	            JSONObject json = jsonParser.makeHttpRequest(url,"POST", params);
+	 
+	            // check log cat fro response
+	          //  Log.d("Create Response", json.toString());
+	            int success;
+				try {
+					Log.d("friend result",json.toString());
+					success = json.getInt(TAG_SUCCESS);
+					return Integer.toString(success);
+					 
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return "";
+				}
+	           
+	 
+	           
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			
+                if (result.equals("1")) {
+                    // successfully created product
+                  Log.d("result","success");
+                    // closing this screen
+                    
+                } else {
+                    // failed to create product
+                	Log.d("result","failure");
+                }
+		}
+	}
+    
         protected void onResume() {
     		// TODO Auto-generated method stub
     		super.onResume();

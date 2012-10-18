@@ -24,6 +24,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,8 +41,10 @@ import android.content.Context;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 
 
@@ -62,7 +65,8 @@ public class EventActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         
-        context = this;    
+        context = this; 
+        callingActivity = this;
         globalState = (InsightGlobalState) getApplication();
         Create=(Button)findViewById(R.id.create_event);
         eventListView=(ListView)findViewById(R.id.EventList);
@@ -80,7 +84,32 @@ public class EventActivity extends Activity {
 		Test projectListTask = new Test(context, callingActivity);
 		projectListTask.execute(url);
 		
-		
+		eventListView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Object o = eventListView.getItemAtPosition(position);
+				Event selectedEvent = (Event) o;
+				/*
+				 * Toast.makeText( cont, "You have chosen: " + " " +
+				 * selectedProject.getProject_name() + " " +
+				 * selectedProject.getProject_id() + " " + position + " " +
+				 * globalState
+				 * .getProjectList().getProjects().get(position).getLeader_id(),
+				 * Toast.LENGTH_LONG).show();
+				 */
+
+				int eventId = selectedEvent.getId();
+				Log.d("event title",Integer.toString(eventId));
+				String url = "http://137.132.82.133/pg2/events_read_ind.php?id=" + eventId;
+				ProgressDialog dialog = new ProgressDialog(context);
+				dialog.setMessage("Getting Event Info...");
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
+				dialog.show();
+				GetEventTask getProjectTask = new GetEventTask(context, callingActivity, dialog);
+				getProjectTask.execute(url);
+			}
+		});
+
 	      
     }
 
@@ -141,6 +170,85 @@ public class EventActivity extends Activity {
 			}
 		}
 	}
+    
+    
+    public class GetEventTask extends AsyncTask<String, Void, String> {
+
+    	private final Context context;
+    	private final Activity callingActivity;
+    	private final ProgressDialog dialog;
+
+    	public GetEventTask(Context context, Activity callingActivity, ProgressDialog dialog) {
+    		this.context = context;
+    		this.callingActivity = callingActivity;
+    		this.dialog = dialog;
+    	}
+
+    	@Override
+    	protected void onPreExecute() {
+    		if (dialog != null) {
+    			if (!this.dialog.isShowing()) {
+    				this.dialog.setMessage("Getting Event Info...");
+    				this.dialog.setCancelable(false);
+    				this.dialog.setCanceledOnTouchOutside(false);
+    				this.dialog.show();
+    			}
+    		}
+    	}
+
+    	@Override
+    	protected String doInBackground(String... urls) {
+    		String response = "";
+    		for (String url : urls) {
+    			DefaultHttpClient client = new DefaultHttpClient();
+    			HttpGet httpGet = new HttpGet(url);
+    			try {
+    				HttpResponse execute = client.execute(httpGet);
+    				InputStream content = execute.getEntity().getContent();
+
+    				BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+    				String s = "";
+    				while ((s = buffer.readLine()) != null) {
+    					response += s;
+    				}
+
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+    		}
+    		return response;
+    	}
+
+    	@Override
+    	protected void onPostExecute(String result) {
+    		try {
+    			if (dialog != null && this.dialog.isShowing()) {
+    				this.dialog.dismiss();
+    			}
+    		} catch (Exception e) {
+    		}
+    		try {
+    			Log.d("get event result", result.toString());
+    			JSONObject resultJson = new JSONObject(result);
+    			if (resultJson.getInt("success") ==1 ) {
+    				JSONArray eventJson = new JSONArray(resultJson.getString("events"));
+    				Gson gson = new Gson();
+    				Event event = gson.fromJson(eventJson.getJSONObject(0).toString(), Event.class);
+    				InsightGlobalState globalState = (InsightGlobalState) callingActivity.getApplication();
+    				globalState.setEvents(event);
+
+    					Intent eventViewIntent = new Intent(context, EventViewActivity.class);
+    					callingActivity.startActivity(eventViewIntent);
+    					//callingActivity.finish();
+
+    			} else {
+    			}
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    }
+
     
 	
 }

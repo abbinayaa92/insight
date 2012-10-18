@@ -2,7 +2,7 @@ package com.example.insight.datamodel;
 
 public class Event {
 	
-	private int event_id;
+	private int id;
 	private String title;
 	private String description;
 	private String venue;
@@ -11,12 +11,7 @@ public class Event {
 	private String coorx;
 	private String coory;
 	
-	public int getEvent_id() {
-		return event_id;
-	}
-	public void setEvent_id(int event_id) {
-		this.event_id = event_id;
-	}
+	
 	public String getTitle() {
 		return title;
 	}
@@ -58,6 +53,12 @@ public class Event {
 	}
 	public void setCoory(String coory) {
 		this.coory = coory;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }
