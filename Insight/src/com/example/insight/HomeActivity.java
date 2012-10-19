@@ -217,15 +217,17 @@ public class HomeActivity extends Activity {
 	            // Building Parameters
 	            List<NameValuePair> params = new ArrayList<NameValuePair>();
 	            //put the appropriate textbox content instead of the actual strings entered here
-	            params.add(new BasicNameValuePair("email", globalState.getEmail())); //put the text of the title textbox here instead of "teting testing events"
+	            params.add(new BasicNameValuePair("email", "asdf@asdf.asdf")); //put the text of the title textbox here instead of "teting testing events"
 	            params.add(new BasicNameValuePair("event_id", "0"));
 	            params.add(new BasicNameValuePair("time", "00:00"));
 	            params.add(new BasicNameValuePair("friends[0]", "adsf@asdf.com"));
 	            params.add(new BasicNameValuePair("friends[1]", "helo@abc.com"));
+	            int x=0 , y=0;
 	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
 	            params.add(new BasicNameValuePair("coorx", "0"));
 	            params.add(new BasicNameValuePair("coory", "0"));
-	 
+	            globalState.setCoorx(x);
+	            globalState.setCoory(y);
 	            // getting JSON Object
 	            // Note that create product url accepts POST method
 	            JSONObject json = jsonParser.makeHttpRequest(url,"POST", params);

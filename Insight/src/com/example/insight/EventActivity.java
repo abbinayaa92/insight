@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.insight.HomeActivity.addUser;
 import com.example.insight.datamodel.Event;
 import com.example.insight.datamodel.Eventlist;
 import com.example.insight.datamodel.InsightGlobalState;
@@ -65,7 +66,9 @@ public class EventActivity extends Activity {
 	private ArrayList<Event> events = new ArrayList<Event>();
 	private Activity callingActivity;
 	private eventListBaseAdapter eventlistba;
-	
+	JSONParser jsonParser = new JSONParser();
+	private String url = "http://137.132.82.133/pg2/users_add.php";
+	private static final String TAG_SUCCESS = "success";
 	
 	
     @Override
@@ -190,9 +193,79 @@ public class EventActivity extends Activity {
 			int coory = intent.getIntExtra("coorY", 0);
 			Log.d("positions x", Integer.toString(coorx));
 			Log.d("positions y", Integer.toString(coory));
+			if(coorx!= globalState.getCoorx() || coory!=globalState.getCoory())
+			{
+				globalState.setCoorx(coorx);
+				globalState.setCoory(coory);
+				addUser newevent = new addUser(context, callingActivity);
+				newevent.execute();
+			}
 
 		}
 	};
+	
+	 public class addUser extends AsyncTask<String, Void, String> {
+			private final Context context;
+			private final Activity callingActivity;
+
+			public addUser(Context context, Activity callingActivity) {
+				this.context = context;
+				this.callingActivity = callingActivity;
+			}
+
+			
+			 protected String doInBackground(String... args) {
+		          
+		 
+		            // Building Parameters
+		            List<NameValuePair> params = new ArrayList<NameValuePair>();
+		            //put the appropriate textbox content instead of the actual strings entered here
+		            params.add(new BasicNameValuePair("email", "asdf@asdf.asdf")); //put the text of the title textbox here instead of "teting testing events"
+		            params.add(new BasicNameValuePair("event_id", "0"));
+		            params.add(new BasicNameValuePair("time", "00:00"));
+		            params.add(new BasicNameValuePair("friends[0]", "adsf@asdf.com"));
+		            params.add(new BasicNameValuePair("friends[1]", "helo@abc.com"));
+		            int coorx=globalState.getCoorx();
+		            int coory=globalState.getCoory();
+		            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
+		            params.add(new BasicNameValuePair("coorx", Integer.toString(coorx)));
+		            params.add(new BasicNameValuePair("coory", Integer.toString(coory)));
+		            // getting JSON Object
+		            // Note that create product url accepts POST method
+		            JSONObject json = jsonParser.makeHttpRequest(url,"POST", params);
+		 
+		            // check log cat fro response
+		          //  Log.d("Create Response", json.toString());
+		            int success;
+					try {
+						Log.d("friend result updated",json.toString());
+						success = json.getInt(TAG_SUCCESS);
+						return Integer.toString(success);
+						 
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return "";
+					}
+		           
+		 
+		           
+			}
+
+			@Override
+			protected void onPostExecute(String result) {
+				
+	                if (result.equals("1")) {
+	                    // successfully created product
+	                  Log.d("result","success");
+	                    // closing this screen
+	                    
+	                } else {
+	                    // failed to create product
+	                	Log.d("result","failure");
+	                }
+			}
+		}
 	
     public class Test extends AsyncTask<String, Void, String> {
 		private final Context context;

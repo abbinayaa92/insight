@@ -6,6 +6,8 @@ public class InsightGlobalState extends Application {
 
 	private String email;
 	private String id;
+	private int coorx;
+	private int coory;
 	private Eventlist eventlist= new Eventlist();
 	private Event events= new Event();
 	private FriendList friendlist= new FriendList();
@@ -46,5 +48,17 @@ public class InsightGlobalState extends Application {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public int getCoorx() {
+		return coorx;
+	}
+	public void setCoorx(int coorx) {
+		this.coorx = coorx;
+	}
+	public int getCoory() {
+		return coory;
+	}
+	public void setCoory(int coory) {
+		this.coory = coory;
 	}
 }
