@@ -47,12 +47,15 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -64,11 +67,13 @@ public class EventActivity extends Activity {
 	private Context context;
 	private Button Create;
 	private ListView eventListView;
+	private EditText Eventsearch;
 	private InsightGlobalState globalState;
 	private ArrayList<Event> events = new ArrayList<Event>();
 	private Activity callingActivity;
 	private eventListBaseAdapter eventlistba;
 	private ArrayList<Event> selected_events;
+	private ArrayList<Event> filtered_events= new ArrayList<Event>();
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/users_add.php";
 	private static final String TAG_SUCCESS = "success";
@@ -84,6 +89,7 @@ public class EventActivity extends Activity {
         globalState = (InsightGlobalState) getApplication();
         Create=(Button)findViewById(R.id.create_event);
         eventListView=(ListView)findViewById(R.id.EventList);
+        Eventsearch = (EditText) findViewById(R.id.EventSearch);
         
         registerReceiver(broadcastReceiver, new IntentFilter("FingerPrint_LOCATION_UPDATE"));
         LocationManager myManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -101,11 +107,36 @@ public class EventActivity extends Activity {
             } 
         });
        
-        
+        Eventsearch.addTextChangedListener(new TextWatcher() {
+			public void afterTextChanged(Editable s) {
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				int textLength2 = Eventsearch.getText().length();
+				filtered_events.clear();
+				for (int i = 0; i < selected_events.size(); i++) {
+					if (textLength2 <= selected_events.get(i).getTitle().length()) {
+						if (Eventsearch.getText().toString().equalsIgnoreCase((String) selected_events.get(i).getTitle().subSequence(0, textLength2))) {
+							filtered_events.add(selected_events.get(i));
+						}
+					}
+				}
+				eventlistba = new eventListBaseAdapter(context, filtered_events);
+				eventListView.setAdapter(eventlistba);
+			}
+		});
         
         String url = "http://137.132.82.133/pg2/events_read.php";
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
-		Test projectListTask = new Test(context, callingActivity);
+		ProgressDialog dialog = new ProgressDialog(context);
+		dialog.setMessage("Retreiving events...");
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.show();
+		Test projectListTask = new Test(context, callingActivity,dialog);
 		projectListTask.execute(url);
 		
 		eventListView.setOnItemClickListener(new OnItemClickListener() {
@@ -204,7 +235,12 @@ public class EventActivity extends Activity {
 				addUser newevent = new addUser(context, callingActivity);
 				newevent.execute();
 				
-				Test projectListTask = new Test(context, callingActivity);
+				ProgressDialog dialog = new ProgressDialog(context);
+				dialog.setMessage("Retreiving events...");
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
+				dialog.show();
+				Test projectListTask = new Test(context, callingActivity,dialog);
 				projectListTask.execute("http://137.132.82.133/pg2/events_read.php");
 			}
 
@@ -279,12 +315,22 @@ public class EventActivity extends Activity {
     public class Test extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
+		private final ProgressDialog dialog;
 
-		public Test(Context context, Activity callingActivity) {
+		public Test(Context context, Activity callingActivity, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
+			this.dialog=dialog;
 		}
 
+		protected void onPreExecute() {
+    		if (!this.dialog.isShowing()) {
+    			this.dialog.setMessage("Retrieving events...");
+    			this.dialog.show();
+    			this.dialog.setCanceledOnTouchOutside(false);
+    			this.dialog.setCancelable(false);
+    		}
+    	}
 
 		@Override
 		protected String doInBackground(String... urls) {
@@ -311,6 +357,12 @@ public class EventActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
+			if (dialog != null) {
+    			if (this.dialog.isShowing()) {
+    				this.dialog.dismiss();
+    			}
+    		}
+    		
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				Log.d("Test", resultJson.toString());

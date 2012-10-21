@@ -20,6 +20,7 @@
     <string name="dateSliderTitle">Selected date</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_event_view">EventViewActivity</string>
+
     <string-array name="samples">
         <item>3</item>
         <item>2</item>
@@ -28,26 +29,26 @@
         <item>10</item>
     </string-array>
     <string-array name="mapsList">
-          <item >com1_map_radar.csv</item>
-          <item >BLK15LVL3_map_radar.csv</item>
-    
-        
+        <item>com1_map_radar.csv</item>
+        <item>BLK15LVL3_map_radar.csv</item>
     </string-array>
     <string-array name="hmapsList">
-         <item >com1_map_hyperbolic.csv</item>
-         <item >com1_L1_L2_map_hyperbolic.csv</item>
-      	 <item >com1_L1_5strong_H.csv</item>
-      	 <item >com1_L1_gt85_H.csv</item>
-      	 <item >com1_L2_5strong_H.csv</item>
-      	 <item >com1_L2_gt85_H.csv</item> 
-      	 <item >com1_L1_L2_5strong_H.csv</item>
-      	 <item >com1_L1_L2_gt85_H.csv</item>        
-         <item >BLK15LVL3_map_hyperbolic.csv</item>
-       	 <item >com1_L1_130512_map_hyperbolic.csv</item>
+        <item>com1_map_hyperbolic.csv</item>
+        <item>com1_L1_L2_map_hyperbolic.csv</item>
+        <item>com1_L1_5strong_H.csv</item>
+        <item>com1_L1_gt85_H.csv</item>
+        <item>com1_L2_5strong_H.csv</item>
+        <item>com1_L2_gt85_H.csv</item>
+        <item>com1_L1_L2_5strong_H.csv</item>
+        <item>com1_L1_L2_gt85_H.csv</item>
+        <item>BLK15LVL3_map_hyperbolic.csv</item>
+        <item>com1_L1_130512_map_hyperbolic.csv</item>
     </string-array>
- 	<string-array name="modelList">
- 	    <item>Hyperbolic</item>
+    <string-array name="modelList">
+        <item>Hyperbolic</item>
         <item>RADAR</item>
     </string-array>
+
+    <string name="title_activity_friend_view">FriendViewActivity</string>
 
 </resources>

@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:hint="Type to search Events"
         android:singleLine="true"
-        android:textColor="#ffffff"
         android:textSize="20sp" />
 
     </LinearLayout>

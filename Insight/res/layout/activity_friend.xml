@@ -18,7 +18,6 @@
             android:layout_height="match_parent"
             android:hint="Type to search friends"
             android:singleLine="true"
-            android:textColor="#ffffff"
             android:textSize="20sp" /> 
      
     </LinearLayout>

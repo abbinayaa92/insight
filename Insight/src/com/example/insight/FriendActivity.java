@@ -16,6 +16,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.example.insight.EventActivity.GetEventTask;
+import com.example.insight.datamodel.Event;
 import com.example.insight.datamodel.Friend;
 import com.example.insight.datamodel.InsightGlobalState;
 import com.example.insight.datamodel.FriendList;
@@ -28,29 +30,41 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 public class FriendActivity extends Activity {
 
 	Button FriendButton;
+	EditText friendSearch;
 	ListView FriendList;
 	Context context;
+	Activity callingActivity;
 	InsightGlobalState globalState;
 	FriendList friendlist;
 	ArrayList<Friend> contactList;
 	ArrayList<String> contactNameList;
+	ArrayList<Friend> filteredNameList = new ArrayList<Friend>();
+	FriendListBaseAdapter friendadapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        callingActivity=this;
         setContentView(R.layout.activity_friend);
         FriendList =(ListView)findViewById(R.id.FriendList);
+        friendSearch =(EditText)findViewById(R.id.FriendSearch);
         globalState=(InsightGlobalState)getApplication();
         friendlist=globalState.getFriendlist();
         contactList = friendlist.getFriendlist();
@@ -61,10 +75,57 @@ public class FriendActivity extends Activity {
         }
         
         
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,  android.R.layout.simple_list_item_1, android.R.id.text1, contactNameList);
+        friendadapter= new FriendListBaseAdapter(context, contactList);
 
 				// Assign adapter to ListView
-	    FriendList.setAdapter(adapter); 
+	    FriendList.setAdapter(friendadapter); 
+	    
+	    friendSearch.addTextChangedListener(new TextWatcher() {
+			public void afterTextChanged(Editable s) {
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				int textLength2 = friendSearch.getText().length();
+				filteredNameList.clear();
+				for (int i = 0; i < contactList.size(); i++) {
+					if (textLength2 <= contactList.get(i).getName().length()) {
+						if (friendSearch.getText().toString().equalsIgnoreCase((String) contactList.get(i).getName().subSequence(0, textLength2))) {
+							filteredNameList.add(contactList.get(i));
+						}
+					}
+				}
+				friendadapter= new FriendListBaseAdapter(context, filteredNameList);
+				FriendList.setAdapter(friendadapter); 
+			}
+		});
+	    
+	    FriendList.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Object o = FriendList.getItemAtPosition(position);
+				Friend selectedFriend = (Friend) o;
+				
+				  Toast.makeText( context, "You have chosen: " + " " +
+				  selectedFriend.getName() + " " +
+				  selectedFriend.getEmail() + " " + selectedFriend.getPhone() + " " +selectedFriend.getFriend_id() + " " +position + " " ,
+				  Toast.LENGTH_LONG).show();
+				 
+
+				int eventId = selectedFriend.getFriend_id();
+//				Log.d("event title",Integer.toString(eventId));
+//				String url = "http://137.132.82.133/pg2/friends_read_ind.php?id=" + eventId;
+//				ProgressDialog dialog = new ProgressDialog(context);
+//				dialog.setMessage("Getting Event Info...");
+//				dialog.setCancelable(false);
+//				dialog.setCanceledOnTouchOutside(false);
+//				dialog.show();
+//				GetEventTask getProjectTask = new GetEventTask(context, callingActivity, dialog);
+//				getProjectTask.execute(url);
+			}
+		});
+
             
     }
 
