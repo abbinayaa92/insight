@@ -34,6 +34,8 @@ import org.json.JSONObject;
 import com.example.insight.HomeActivity.addUser;
 import com.example.insight.datamodel.Event;
 import com.example.insight.datamodel.Eventlist;
+import com.example.insight.datamodel.Friend;
+import com.example.insight.datamodel.FriendList;
 import com.example.insight.datamodel.InsightGlobalState;
 import com.google.android.maps.GeoPoint;
 import com.google.gson.Gson;
@@ -66,6 +68,7 @@ public class EventActivity extends Activity {
 	private ArrayList<Event> events = new ArrayList<Event>();
 	private Activity callingActivity;
 	private eventListBaseAdapter eventlistba;
+	private ArrayList<Event> selected_events;
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/users_add.php";
 	private static final String TAG_SUCCESS = "success";
@@ -195,10 +198,14 @@ public class EventActivity extends Activity {
 			Log.d("positions y", Integer.toString(coory));
 			if(coorx!= globalState.getCoorx() || coory!=globalState.getCoory())
 			{
+				Log.d("position changed", "x,y");
 				globalState.setCoorx(coorx);
 				globalState.setCoory(coory);
 				addUser newevent = new addUser(context, callingActivity);
 				newevent.execute();
+				
+				Test projectListTask = new Test(context, callingActivity);
+				projectListTask.execute("http://137.132.82.133/pg2/events_read.php");
 			}
 
 		}
@@ -223,8 +230,10 @@ public class EventActivity extends Activity {
 		            params.add(new BasicNameValuePair("email", "asdf@asdf.asdf")); //put the text of the title textbox here instead of "teting testing events"
 		            params.add(new BasicNameValuePair("event_id", "0"));
 		            params.add(new BasicNameValuePair("time", "00:00"));
-		            params.add(new BasicNameValuePair("friends[0]", "adsf@asdf.com"));
-		            params.add(new BasicNameValuePair("friends[1]", "helo@abc.com"));
+		            FriendList Flist = globalState.getFriendlist();
+		            List<Friend> listfriend = Flist.getFriendlist();
+		            for(int i=0;i<listfriend.size();i++)
+		            	params.add(new BasicNameValuePair("friends["+i+"]", listfriend.get(i).getEmail()));
 		            int coorx=globalState.getCoorx();
 		            int coory=globalState.getCoory();
 		            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
@@ -309,7 +318,23 @@ public class EventActivity extends Activity {
 				Eventlist eventsContainer = gson.fromJson(result, Eventlist.class);
 				globalState.setEventlist(eventsContainer);
 				events = eventsContainer.getEvents();
-				eventlistba = new eventListBaseAdapter(context, events);
+				selected_events=new ArrayList<Event>();
+				int xcoor = globalState.getCoorx();
+				int ycoor = globalState.getCoory();
+				Log.d("xcoor",Integer.toString(xcoor));
+				Log.d("ycoor",Integer.toString(ycoor));
+				for(int i=0;i<events.size();i++)
+				{
+					int xdiff = events.get(i).getCoorx() - xcoor;
+					int ydiff = events.get(i).getCoory() - ycoor;
+					if( (xdiff <=5 && xdiff >= -5) && (ydiff <=5 && ydiff >=-5))
+					{
+						Log.d("event selected", " "+ xdiff+" " +ydiff+ " "+ events.get(i).getTitle()+ "" +events.get(i).getCoorx()+ "" +events.get(i).getCoory());
+						selected_events.add(events.get(i));
+					}
+							
+				}
+				eventlistba = new eventListBaseAdapter(context, selected_events);
 				eventListView.setAdapter(eventlistba);
 				
 			} catch (JSONException e) {

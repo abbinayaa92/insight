@@ -58,6 +58,7 @@ public class HomeActivity extends Activity {
 	private InsightGlobalState globalState;
 	private ArrayList<Friend> contactlist;
 	private FriendList friendlist;
+	private int cont_ref=1;
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/users_add.php";
 	private static final String TAG_SUCCESS = "success";
@@ -70,8 +71,9 @@ public class HomeActivity extends Activity {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         currentActivity=this;
         context=this;
-      
         globalState = (InsightGlobalState) getApplication();
+        globalState.setCoorx(0);
+        globalState.setCoory(0);
         contactlist = new ArrayList<Friend>();
         friendlist = new FriendList();
         TabHost tabHost = (TabHost)findViewById(R.id.tabhost);
@@ -98,12 +100,6 @@ public class HomeActivity extends Activity {
         tabHost.addTab(eventspec); // Adding photos tab
         tabHost.addTab(friendspec); // Adding songs tab
         
-       
-		
-        addUser newevent = new addUser(context, currentActivity);
-		newevent.execute();
-		
-		
     }
     
 
@@ -198,6 +194,8 @@ public class HomeActivity extends Activity {
     		}
     		else
     		Log.d("error contact list size 0","");
+    		 addUser newevent = new addUser(context, currentActivity);
+    			newevent.execute();
     	}
     }  
     
@@ -220,14 +218,15 @@ public class HomeActivity extends Activity {
 	            params.add(new BasicNameValuePair("email", "asdf@asdf.asdf")); //put the text of the title textbox here instead of "teting testing events"
 	            params.add(new BasicNameValuePair("event_id", "0"));
 	            params.add(new BasicNameValuePair("time", "00:00"));
-	            params.add(new BasicNameValuePair("friends[0]", "adsf@asdf.com"));
-	            params.add(new BasicNameValuePair("friends[1]", "helo@abc.com"));
-	            int x=0 , y=0;
+	            FriendList Flist = globalState.getFriendlist();
+	            List<Friend> listfriend = Flist.getFriendlist();
+	            for(int i=0;i<listfriend.size();i++)
+	            	params.add(new BasicNameValuePair("friends["+i+"]", listfriend.get(i).getEmail()));
+	            //params.add(new BasicNameValuePair("friends[1]", "helo@abc.com"));
 	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
-	            params.add(new BasicNameValuePair("coorx", "0"));
-	            params.add(new BasicNameValuePair("coory", "0"));
-	            globalState.setCoorx(x);
-	            globalState.setCoory(y);
+	            params.add(new BasicNameValuePair("coorx", Integer.toString(globalState.getCoorx())));
+	            params.add(new BasicNameValuePair("coory", Integer.toString(globalState.getCoory())));
+	            
 	            // getting JSON Object
 	            // Note that create product url accepts POST method
 	            JSONObject json = jsonParser.makeHttpRequest(url,"POST", params);
@@ -265,17 +264,36 @@ public class HomeActivity extends Activity {
 		}
 	}
     
+
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.Sync:
+			ProgressDialog dialog = new ProgressDialog(context);
+			dialog.setMessage("Syncing contacts from google...");
+			dialog.setCancelable(false);
+			dialog.setCanceledOnTouchOutside(false);
+			dialog.show();
+    		new GetContacts(currentActivity,dialog).execute(context);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
         protected void onResume() {
     		// TODO Auto-generated method stub
     		super.onResume();
-    		if (isOAuthSuccessful()) {
+    		if (isOAuthSuccessful() && cont_ref==1) {
         		// OAuth successful, try getting the contacts
+    			cont_ref=0;
     			ProgressDialog dialog = new ProgressDialog(context);
     			dialog.setMessage("Syncing contacts from google...");
     			dialog.setCancelable(false);
     			dialog.setCanceledOnTouchOutside(false);
     			dialog.show();
         		new GetContacts(currentActivity,dialog).execute(context);
+        		
         	}
         	else {
         		

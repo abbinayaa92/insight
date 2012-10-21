@@ -37,6 +37,7 @@ public final class R {
         public static final int LoginEmail=0x7f080014;
         public static final int Name=0x7f08001c;
         public static final int ProgressLayout=0x7f080029;
+        public static final int Sync=0x7f080035;
         public static final int Timeinfo=0x7f08000c;
         public static final int Venue=0x7f080007;
         public static final int Venueinfo=0x7f080008;

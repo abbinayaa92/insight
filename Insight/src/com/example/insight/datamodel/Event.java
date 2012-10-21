@@ -8,8 +8,8 @@ public class Event {
 	private String venue;
 	private String date;
 	private String time;
-	private String coorx;
-	private String coory;
+	private int coorx;
+	private int coory;
 	
 	
 	public String getTitle() {
@@ -42,16 +42,16 @@ public class Event {
 	public void setTime(String time) {
 		this.time = time;
 	}
-	public String getCoorx() {
+	public int getCoorx() {
 		return coorx;
 	}
-	public void setCoorx(String coorx) {
+	public void setCoorx(int coorx) {
 		this.coorx = coorx;
 	}
-	public String getCoory() {
+	public int getCoory() {
 		return coory;
 	}
-	public void setCoory(String coory) {
+	public void setCoory(int coory) {
 		this.coory = coory;
 	}
 	public int getId() {

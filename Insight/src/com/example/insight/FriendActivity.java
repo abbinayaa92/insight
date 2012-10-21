@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -72,6 +73,7 @@ public class FriendActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_friend, menu);
         return true;
     }
+    
     
 
 
