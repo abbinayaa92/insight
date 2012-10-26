@@ -2,34 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="5dp"
+    android:layout_margin="20dp"
     android:orientation="vertical" >
     
-    <QuickContactBadge
-        android:id="@+id/quickContactBadge1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    
-
-<View
-    android:id="@+id/separator"
-    android:layout_width="fill_parent"
-    android:layout_height="1dip"
-    android:layout_alignParentTop="true"
-    android:layout_centerVertical="true"
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:background="#ffffff" />
-
-    <TextView
+    android:orientation="horizontal" >
+    
+    <ImageView
+        android:id="@+id/ContactImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/contact" />
+    
+     <TextView
         android:id="@+id/FriendName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/name"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+   </LinearLayout> 
+   
     <TextView
         android:id="@+id/Friendmobile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:text="@string/mobile"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -37,25 +38,16 @@
         android:id="@+id/Friendemail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="email @address"
+        android:layout_marginLeft="5dp"
+        android:text="email address"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
-    <View
-        android:id="@+id/separator"
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="5dp"
-        android:background="#ffffff" />
-    
-    <com.google.android.maps.MapView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+   <com.google.android.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="186dp"
-        android:apiKey="0eqQK2dZVSM9_30dZvwrCPWgaQVZekSxT1-Q9-A"
-        android:clickable="true" />
+        android:apiKey="096zEE3HXAxQnYHuvDSFTkAW_et58LC4M7cZmRA"
+        android:clickable="true" /> 
 
 </LinearLayout>

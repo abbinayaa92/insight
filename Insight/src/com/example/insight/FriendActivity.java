@@ -14,6 +14,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.insight.EventActivity.GetEventTask;
@@ -21,6 +22,7 @@ import com.example.insight.datamodel.Event;
 import com.example.insight.datamodel.Friend;
 import com.example.insight.datamodel.InsightGlobalState;
 import com.example.insight.datamodel.FriendList;
+import com.google.gson.Gson;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -66,20 +69,15 @@ public class FriendActivity extends Activity {
         FriendList =(ListView)findViewById(R.id.FriendList);
         friendSearch =(EditText)findViewById(R.id.FriendSearch);
         globalState=(InsightGlobalState)getApplication();
-        friendlist=globalState.getFriendlist();
-        contactList = friendlist.getFriendlist();
-        contactNameList=new ArrayList<String>();
-        for(int i=0;i< contactList.size();i++)
-        {
-        	contactNameList.add(contactList.get(i).getName());
-        }
-        
-        
-        friendadapter= new FriendListBaseAdapter(context, contactList);
 
-				// Assign adapter to ListView
-	    FriendList.setAdapter(friendadapter); 
-	    
+		  friendlist=globalState.getFriendlist();
+	        contactList = friendlist.getFriendlist();
+	        
+	        friendadapter= new FriendListBaseAdapter(context, contactList);
+
+					// Assign adapter to ListView
+		    FriendList.setAdapter(friendadapter); 
+		    
 	    friendSearch.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
 			}
@@ -109,25 +107,113 @@ public class FriendActivity extends Activity {
 				
 				  Toast.makeText( context, "You have chosen: " + " " +
 				  selectedFriend.getName() + " " +
-				  selectedFriend.getEmail() + " " + selectedFriend.getPhone() + " " +selectedFriend.getFriend_id() + " " +position + " " ,
+				  selectedFriend.getEmail() + " " + selectedFriend.getPhone() + " " +
+				 selectedFriend.getId() + " " + " " + selectedFriend.getFloor_id()+ " " + selectedFriend.getLat()+ " " + selectedFriend.getLon()+position + " " ,
 				  Toast.LENGTH_LONG).show();
 				 
 
-				int eventId = selectedFriend.getFriend_id();
-//				Log.d("event title",Integer.toString(eventId));
-//				String url = "http://137.132.82.133/pg2/friends_read_ind.php?id=" + eventId;
-//				ProgressDialog dialog = new ProgressDialog(context);
-//				dialog.setMessage("Getting Event Info...");
-//				dialog.setCancelable(false);
-//				dialog.setCanceledOnTouchOutside(false);
-//				dialog.show();
-//				GetEventTask getProjectTask = new GetEventTask(context, callingActivity, dialog);
-//				getProjectTask.execute(url);
+				int friendId = selectedFriend.getId();
+				Log.d("friend title",Integer.toString(friendId));
+				String url = "http://137.132.82.133/pg2/users_read_ind.php?id=" + friendId;
+				ProgressDialog dialog = new ProgressDialog(context);
+				dialog.setMessage("Getting Friend Info...");
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
+				dialog.show();
+				getf getProjectTask = new getf(context, callingActivity, dialog);
+				getProjectTask.execute(url);
 			}
 		});
-
-            
     }
+
+	    public class getf extends AsyncTask<String, Void, String> {
+
+	    	private final Context context;
+	    	private final Activity callingActivity;
+	    	private final ProgressDialog dialog;
+
+	    	public getf(Context context, Activity callingActivity, ProgressDialog dialog) {
+	    		this.context = context;
+	    		this.callingActivity = callingActivity;
+	    		this.dialog = dialog;
+	    	}
+
+	    	@Override
+	    	protected void onPreExecute() {
+	    		if (dialog != null) {
+	    			if (!this.dialog.isShowing()) {
+	    				this.dialog.setMessage("Getting Friend Info...");
+	    				this.dialog.setCancelable(false);
+	    				this.dialog.setCanceledOnTouchOutside(false);
+	    				this.dialog.show();
+	    			}
+	    		}
+	    	}
+
+	    	@Override
+	    	protected String doInBackground(String... urls) {
+	    		String response = "";
+	    		for (String url : urls) {
+	    			DefaultHttpClient client = new DefaultHttpClient();
+	    			HttpGet httpGet = new HttpGet(url);
+	    			try {
+	    				HttpResponse execute = client.execute(httpGet);
+	    				InputStream content = execute.getEntity().getContent();
+
+	    				BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+	    				String s = "";
+	    				while ((s = buffer.readLine()) != null) {
+	    					response += s;
+	    				}
+
+	    			} catch (Exception e) {
+	    				e.printStackTrace();
+	    			}
+	    		}
+	    		return response;
+	    	}
+
+	    	@Override
+	    	protected void onPostExecute(String result) {
+	    		try {
+	    			if (dialog != null && this.dialog.isShowing()) {
+	    				this.dialog.dismiss();
+	    			}
+	    		} catch (Exception e) {
+	    		}
+	    		try {
+	    			Log.d("get friend detail result", result.toString());
+	    			JSONObject resultJson = new JSONObject(result);
+	    			if (resultJson.getInt("success") ==1 ) {
+	    				JSONArray friendJson = new JSONArray(resultJson.getString("users"));
+	    				Gson gson = new Gson();
+	    				Friend friend1 = gson.fromJson(friendJson.getJSONObject(0).toString(), Friend.class);
+	    				InsightGlobalState globalState = (InsightGlobalState) callingActivity.getApplication();
+	    				FriendList list= globalState.getFriendlist();
+	    				for(int i=0;i<list.size();i++)
+	    				{
+	    					if(list.get(i).getId()==friend1.getId())
+	    					{
+	    						Log.d("in match",friend1.getEmail());
+	    						friend1.setName(list.get(i).getName());
+	    						friend1.setPhone(list.get(i).getPhone());
+	    					}
+	    				}
+	    				globalState.setFriends(friend1);
+
+	    					Intent eventViewIntent = new Intent(context, FriendViewActivity.class);
+	    					callingActivity.startActivity(eventViewIntent);
+	    					//callingActivity.finish();
+
+	    			} else {
+	    			}
+	    		} catch (JSONException e) {
+	    			e.printStackTrace();
+	    		}
+	    	}
+	    }
+            
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -135,6 +221,10 @@ public class FriendActivity extends Activity {
         return true;
     }
     
+    protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+    }
     
 
 

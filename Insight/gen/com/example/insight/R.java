@@ -17,12 +17,18 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int ic_action_search=0x7f020000;
-        public static final int ic_launcher=0x7f020001;
-        public static final int slider_nosnap=0x7f020002;
+        public static final int bubble=0x7f020000;
+        public static final int closebutton=0x7f020001;
+        public static final int contact=0x7f020002;
+        public static final int dot=0x7f020003;
+        public static final int ic_action_search=0x7f020004;
+        public static final int ic_launcher=0x7f020005;
+        public static final int slider_nosnap=0x7f020006;
+        public static final int star=0x7f020007;
     }
     public static final class id {
         public static final int AddEvent=0x7f080025;
+        public static final int ContactImage=0x7f080013;
         public static final int Date=0x7f080009;
         public static final int Dateinfo=0x7f08000a;
         public static final int Descinfo=0x7f080006;
@@ -39,7 +45,7 @@ public final class R {
         public static final int LoginButton=0x7f08001a;
         public static final int LoginEmail=0x7f080019;
         public static final int ProgressLayout=0x7f080029;
-        public static final int Sync=0x7f080036;
+        public static final int Sync=0x7f080039;
         public static final int Timeinfo=0x7f08000c;
         public static final int Venue=0x7f080007;
         public static final int Venueinfo=0x7f080008;
@@ -59,18 +65,20 @@ public final class R {
         public static final int location=0x7f080033;
         public static final int maps=0x7f080031;
         public static final int mapview=0x7f080017;
-        public static final int menu_settings=0x7f080035;
+        public static final int mark_close_button=0x7f080036;
+        public static final int mark_snippet=0x7f080035;
+        public static final int mark_title=0x7f080034;
+        public static final int menu_settings=0x7f080038;
         public static final int model=0x7f080030;
         public static final int newEventDate=0x7f080023;
         public static final int newEventDesc=0x7f080021;
         public static final int newEventTime=0x7f080024;
         public static final int newEventTitle=0x7f080020;
         public static final int newEventVenue=0x7f080022;
-        public static final int quickContactBadge1=0x7f080013;
         public static final int sampleSize=0x7f08002f;
         public static final int samples_tocollect=0x7f080032;
         public static final int separator=0x7f08000d;
-        public static final int setting=0x7f080034;
+        public static final int setting=0x7f080037;
         public static final int tabhost=0x7f080018;
         public static final int tbServer=0x7f08002c;
         public static final int textView1=0x7f08000b;
@@ -91,7 +99,8 @@ public final class R {
         public static final int eventlistitem=0x7f030009;
         public static final int friendlistitem=0x7f03000a;
         public static final int main=0x7f03000b;
-        public static final int scroller=0x7f03000c;
+        public static final int markview=0x7f03000c;
+        public static final int scroller=0x7f03000d;
     }
     public static final class menu {
         public static final int activity_event=0x7f070000;

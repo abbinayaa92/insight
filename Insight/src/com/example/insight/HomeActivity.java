@@ -12,6 +12,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -19,11 +20,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.insight.EventActivity.GetEventTask;
 import com.example.insight.EventForm.addTest;
+import com.example.insight.datamodel.Event;
+import com.example.insight.datamodel.Eventlist;
 import com.example.insight.datamodel.Friend;
 import com.example.insight.datamodel.FriendList;
 import com.example.insight.datamodel.InsightGlobalState;
 import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
 
 import android.location.Location;
 import android.location.LocationManager;
@@ -74,6 +79,9 @@ public class HomeActivity extends Activity {
         globalState = (InsightGlobalState) getApplication();
         globalState.setCoorx(0);
         globalState.setCoory(0);
+        globalState.setLat(0);
+        globalState.setLon(0);
+        globalState.setFloor_id("");
         contactlist = new ArrayList<Friend>();
         friendlist = new FriendList();
         TabHost tabHost = (TabHost)findViewById(R.id.tabhost);
@@ -215,7 +223,7 @@ public class HomeActivity extends Activity {
 	            // Building Parameters
 	            List<NameValuePair> params = new ArrayList<NameValuePair>();
 	            //put the appropriate textbox content instead of the actual strings entered here
-	            params.add(new BasicNameValuePair("email", "asdf@asdf.asdf")); //put the text of the title textbox here instead of "teting testing events"
+	            params.add(new BasicNameValuePair("email", globalState.getEmail())); //put the text of the title textbox here instead of "teting testing events"
 	            params.add(new BasicNameValuePair("event_id", "0"));
 	            params.add(new BasicNameValuePair("time", "00:00"));
 	            FriendList Flist = globalState.getFriendlist();
@@ -226,7 +234,9 @@ public class HomeActivity extends Activity {
 	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
 	            params.add(new BasicNameValuePair("coorx", Integer.toString(globalState.getCoorx())));
 	            params.add(new BasicNameValuePair("coory", Integer.toString(globalState.getCoory())));
-	            
+	            params.add(new BasicNameValuePair("lat", Double.toString(globalState.getLat())));
+	            params.add(new BasicNameValuePair("lon", Double.toString(globalState.getLon())));
+	            params.add(new BasicNameValuePair("floor_id", globalState.getFloor_id()));
 	            // getting JSON Object
 	            // Note that create product url accepts POST method
 	            JSONObject json = jsonParser.makeHttpRequest(url,"POST", params);
@@ -237,7 +247,7 @@ public class HomeActivity extends Activity {
 				try {
 					Log.d("friend result",json.toString());
 					success = json.getInt(TAG_SUCCESS);
-					return Integer.toString(success);
+					return json.toString();
 					 
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -251,18 +261,136 @@ public class HomeActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			
-                if (result.equals("1")) {
-                    // successfully created product
-                  Log.d("result","success");
-                    // closing this screen
-                    
-                } else {
-                    // failed to create product
-                	Log.d("result","failure");
+			try
+			{
+			JSONObject resultJson = new JSONObject(result);
+                if (resultJson.getInt(TAG_SUCCESS)==1)
+                {
+                	String id = resultJson.getString("message");
+                	id=id.substring(2, id.length()-2 );
+                	Log.d("id",id);
+                	globalState.setId(id);
+                	String url = "http://137.132.82.133/pg2/users_read_friends.php?user_id=" + id;
+    				ProgressDialog dialog = new ProgressDialog(context);
+    				dialog.setMessage("Getting Friend Info...");
+    				dialog.setCancelable(false);
+    				dialog.setCanceledOnTouchOutside(false);
+    				dialog.show();
+    				GetFriendTask getFriendTask = new GetFriendTask(context, callingActivity, dialog);
+    				getFriendTask.execute(url);
                 }
+                else
+                	Log.d("result","failure");
+			}
+			catch(JSONException e)
+			{}
 		}
 	}
+    
+    
+    public class GetFriendTask extends AsyncTask<String, Void, String> {
+
+    	private final Context context;
+    	private final Activity callingActivity;
+    	private final ProgressDialog dialog;
+
+    	public GetFriendTask(Context context, Activity callingActivity, ProgressDialog dialog) {
+    		this.context = context;
+    		this.callingActivity = callingActivity;
+    		this.dialog = dialog;
+    	}
+
+    	@Override
+    	protected void onPreExecute() {
+    		if (dialog != null) {
+    			if (!this.dialog.isShowing()) {
+    				this.dialog.setMessage("Getting Friend Info...");
+    				this.dialog.setCancelable(false);
+    				this.dialog.setCanceledOnTouchOutside(false);
+    				this.dialog.show();
+    			}
+    		}
+    	}
+
+    	@Override
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet httpGet = new HttpGet(url);
+				try {
+					HttpResponse execute = client.execute(httpGet);
+					InputStream content = execute.getEntity().getContent();
+
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+					String s = "";
+					while ((s = buffer.readLine()) != null) {
+						response += s;
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return response;
+		}
+
+
+    	@Override
+    	protected void onPostExecute(String result) {
+    		try {
+    			if (dialog != null && this.dialog.isShowing()) {
+    				this.dialog.dismiss();
+    			}
+    		} catch (Exception e) {
+    		}
+    		try {
+    			
+    			JSONObject resultJson = new JSONObject(result);
+    			JSONArray friendJson = resultJson.getJSONArray("friends");
+    			Log.d("get friend result", resultJson.toString());
+    				Gson gson = new Gson();
+    				ArrayList<Friend> friendlistcont = new ArrayList<Friend>();
+    				//FriendList friendsContainer = gson.fromJson(result, FriendList.class);
+    				for(int i=0;i<friendJson.length();i++)
+    				{
+    				Friend friendscont=gson.fromJson(friendJson.getJSONObject(i).toString(), Friend.class);
+    				friendlistcont.add(friendscont);
+    				}
+    				FriendList newlist= new FriendList();
+    				newlist.setFriendlist(friendlistcont);
+    				FriendList list= globalState.getFriendlist();
+    				System.out.println("size=" + list.size()+ " "+ newlist.size());
+    				Log.d("friend container",Integer.toString(friendlistcont.size()));
+    				for(int i=0;i<list.size();i++)
+    				{
+    					Friend friend= new Friend();
+    					friend= list.get(i);
+    					System.out.println(i);
+    					for(int j=0;j<friendlistcont.size();j++)
+    					{
+    						Log.d("email of friend",friend.getEmail());
+    						System.out.println(j);
+    						if(newlist.get(j).getEmail().equalsIgnoreCase(friend.getEmail()))
+    						{
+    							
+    							Log.d("id in cont", friend.getName());
+    							Friend newfriend=newlist.get(j);
+    							newfriend.setName(friend.getName());
+    							newfriend.setPhone(friend.getPhone());
+    							friendlistcont.set(j, newfriend);
+//    							newlist.set(j, newfriend);
+    						}
+    					}
+    				}
+    				newlist.setFriendlist(friendlistcont);
+    				globalState.setFriendlist(newlist);
+
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    }
     
 
     @Override

@@ -92,14 +92,7 @@ public class EventActivity extends Activity {
         Eventsearch = (EditText) findViewById(R.id.EventSearch);
         
         registerReceiver(broadcastReceiver, new IntentFilter("FingerPrint_LOCATION_UPDATE"));
-        LocationManager myManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		Location myLocation = myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		GeoPoint myPosition;
-		if (myLocation == null)
-			myPosition = new GeoPoint(1294949, 103773838); // default COM1
-															// location
-		else
-			myPosition = new GeoPoint((int) (myLocation.getLatitude() * 1E6), (int) (myLocation.getLongitude() * 1E6));
+        
 		
         Create.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -225,13 +218,28 @@ public class EventActivity extends Activity {
 			// received from broadcast
 			int coorx = intent.getIntExtra("coorX", 0);
 			int coory = intent.getIntExtra("coorY", 0);
+			String floor_id =intent.getStringExtra("floorID");
+			
+			double latitude=intent.getIntExtra("userPositionX", 0);
+			double longitude=intent.getIntExtra("userPositionY", 0);
 			Log.d("positions x", Integer.toString(coorx));
 			Log.d("positions y", Integer.toString(coory));
-			if(coorx!= globalState.getCoorx() || coory!=globalState.getCoory())
+			LocationManager myManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			Location myLocation = myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			if (myLocation == null)
+			{
+				globalState.setLat(1294949);
+				globalState.setLon(103773838);
+			}
+			if(coorx!= globalState.getCoorx() || coory!=globalState.getCoory() || !floor_id.equals(globalState.getFloor_id()))
 			{
 				Log.d("position changed", "x,y");
 				globalState.setCoorx(coorx);
 				globalState.setCoory(coory);
+				globalState.setFloor_id(floor_id);
+				Log.d("floor id in eventact",globalState.getFloor_id());
+				globalState.setLat(latitude);
+				globalState.setLon(longitude);
 				addUser newevent = new addUser(context, callingActivity);
 				newevent.execute();
 				
@@ -263,7 +271,7 @@ public class EventActivity extends Activity {
 		            // Building Parameters
 		            List<NameValuePair> params = new ArrayList<NameValuePair>();
 		            //put the appropriate textbox content instead of the actual strings entered here
-		            params.add(new BasicNameValuePair("email", "asdf@asdf.asdf")); //put the text of the title textbox here instead of "teting testing events"
+		            params.add(new BasicNameValuePair("email", globalState.getEmail())); //put the text of the title textbox here instead of "teting testing events"
 		            params.add(new BasicNameValuePair("event_id", "0"));
 		            params.add(new BasicNameValuePair("time", "00:00"));
 		            FriendList Flist = globalState.getFriendlist();
@@ -275,6 +283,9 @@ public class EventActivity extends Activity {
 		            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
 		            params.add(new BasicNameValuePair("coorx", Integer.toString(coorx)));
 		            params.add(new BasicNameValuePair("coory", Integer.toString(coory)));
+		            params.add(new BasicNameValuePair("lat", Double.toString(globalState.getLat())));
+		            params.add(new BasicNameValuePair("lon", Double.toString(globalState.getLon())));
+		            params.add(new BasicNameValuePair("floor_id",globalState.getFloor_id()));
 		            // getting JSON Object
 		            // Note that create product url accepts POST method
 		            JSONObject json = jsonParser.makeHttpRequest(url,"POST", params);

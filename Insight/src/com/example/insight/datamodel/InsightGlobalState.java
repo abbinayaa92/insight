@@ -8,6 +8,9 @@ public class InsightGlobalState extends Application {
 	private String id;
 	private int coorx;
 	private int coory;
+	private double lat;
+	private double lon;
+	private String floor_id;
 	private Eventlist eventlist= new Eventlist();
 	private Event events= new Event();
 	private FriendList friendlist= new FriendList();
@@ -60,5 +63,23 @@ public class InsightGlobalState extends Application {
 	}
 	public void setCoory(int coory) {
 		this.coory = coory;
+	}
+	public double getLat() {
+		return lat;
+	}
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+	public double getLon() {
+		return lon;
+	}
+	public void setLon(double lon) {
+		this.lon = lon;
+	}
+	public String getFloor_id() {
+		return floor_id;
+	}
+	public void setFloor_id(String floor_id) {
+		this.floor_id = floor_id;
 	}
 }
