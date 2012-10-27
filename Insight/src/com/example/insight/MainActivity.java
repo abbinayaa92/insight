@@ -28,6 +28,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -43,6 +44,7 @@ public class MainActivity extends Activity {
 	Button Login;
 	private SharedPreferences prefs;
 	private InsightGlobalState globalState;
+	Activity callingActivity;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,19 +53,30 @@ public class MainActivity extends Activity {
         
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         globalState= (InsightGlobalState)getApplication();
+        callingActivity=this;
         email= (EditText) findViewById(R.id.LoginEmail);
         Login =(Button) findViewById(R.id.LoginButton);
+        
+//        if(!prefs.getString("username", "").equals("") && isOAuthSuccessful())
+//        {
+//        	startActivity(new Intent().setClass(this, HomeActivity.class));
+//        	callingActivity.finish();
+//        }
         Login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	String loginmail=email.getText().toString();
             	if(!(loginmail.equals("")))
             	{
             		globalState.setEmail(loginmail);
+            		final Editor edit = prefs.edit();
+        			edit.putString("username", loginmail);
+        			edit.commit();
             	
             	if(isOAuthSuccessful())
             		startActivity(new Intent().setClass(v.getContext(), HomeActivity.class));
             	else
             		startActivity(new Intent().setClass(v.getContext(), RequestTokenActivity.class));
+            	callingActivity.finish();
             	}
             	else
             		Log.d("error","empty login email");

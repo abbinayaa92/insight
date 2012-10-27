@@ -11,6 +11,7 @@ public class Friend {
 	private double lat;
 	private double lon;
 	private String floor_id;
+	private String floor_name;
 	private int event_id;
 	private String time;
 	
@@ -79,6 +80,12 @@ public class Friend {
 	}
 	public void setFloor_id(String floor_id) {
 		this.floor_id = floor_id;
+	}
+	public String getFloor_name() {
+		return floor_name;
+	}
+	public void setFloor_name(String floor_name) {
+		this.floor_name = floor_name;
 	}
 	
 }

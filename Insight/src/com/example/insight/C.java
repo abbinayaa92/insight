@@ -13,7 +13,7 @@ public class C {
 	public static final String ACCESS_URL 		= "https://www.google.com/accounts/OAuthGetAccessToken";  
 	public static final String AUTHORIZE_URL 	= "https://www.google.com/accounts/OAuthAuthorizeToken";
 	
-	public static final String GET_CONTACTS_FROM_GOOGLE_REQUEST 		= "https://www.google.com/m8/feeds/contacts/default/full?alt=json";
+	public static final String GET_CONTACTS_FROM_GOOGLE_REQUEST 		= "https://www.google.com/m8/feeds/contacts/default/full?max-results=500&&alt=json";
 	
 	public static final String ENCODING 		= "UTF-8";
 	

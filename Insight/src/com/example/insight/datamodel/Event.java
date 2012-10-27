@@ -1,4 +1,6 @@
 package com.example.insight.datamodel;
+import java.lang.Math ;
+import java.util.Comparator;
 
 public class Event {
 	
@@ -10,6 +12,8 @@ public class Event {
 	private String time;
 	private int coorx;
 	private int coory;
+	private String floor_id;
+	private double distance;
 	
 	
 	public String getTitle() {
@@ -60,5 +64,30 @@ public class Event {
 	public void setId(int id) {
 		this.id = id;
 	}
+	public String getFloor_id() {
+		return floor_id;
+	}
+	public void setFloor_id(String floor_id) {
+		this.floor_id = floor_id;
+	}
+	public double getDistance() {
+		return distance;
+	}
+	public void setDistance(int x,int y) {
+		if(coorx==0 && coory==0)
+			this.distance = Math.sqrt((x)^2 + (y)^2);
+		else
+			this.distance = Math.sqrt((x-coorx)^2 + (y-coory)^2);
+	}
+	
+	public class EventLocCompare implements Comparator<Event> {
+
+		public int compare(Event o1, Event o2) {
+			Double d2= new Double(o2.getDistance());
+			return (d2.compareTo(o1.getDistance()));
+		}
+	}
+
 
 }
+

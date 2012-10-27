@@ -113,6 +113,7 @@ public class EventForm extends Activity {
 	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
 	            params.add(new BasicNameValuePair("coorx", "0"));
 	            params.add(new BasicNameValuePair("coory", "0"));
+	            params.add(new BasicNameValuePair("floor_id", "COM1_L2.jpg")); // set the actual floor id instead
 	 
 	            // getting JSON Object
 	            // Note that create product url accepts POST method

@@ -3,6 +3,7 @@ package com.example.insight;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.app.DownloadManager.Query;
 import android.app.LocalActivityManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -82,6 +84,7 @@ public class HomeActivity extends Activity {
         globalState.setLat(0);
         globalState.setLon(0);
         globalState.setFloor_id("");
+        globalState.setFloor_name("");
         contactlist = new ArrayList<Friend>();
         friendlist = new FriendList();
         TabHost tabHost = (TabHost)findViewById(R.id.tabhost);
@@ -142,6 +145,7 @@ public class HomeActivity extends Activity {
     		String jsonOutput = "";
     		
             try {
+            	
             	jsonOutput = makeSecuredReq(C.GET_CONTACTS_FROM_GOOGLE_REQUEST,getConsumer(prefs));
              	JSONObject jsonResponse = new JSONObject(jsonOutput);
             	JSONObject m = (JSONObject)jsonResponse.get("feed");
@@ -174,8 +178,6 @@ public class HomeActivity extends Activity {
             			
                 		contactlist.add(contact);
             		}
-            		
-            		
             	}
             	
             	return contactlist;
@@ -224,19 +226,18 @@ public class HomeActivity extends Activity {
 	            List<NameValuePair> params = new ArrayList<NameValuePair>();
 	            //put the appropriate textbox content instead of the actual strings entered here
 	            params.add(new BasicNameValuePair("email", globalState.getEmail())); //put the text of the title textbox here instead of "teting testing events"
-	            params.add(new BasicNameValuePair("event_id", "0"));
-	            params.add(new BasicNameValuePair("time", "00:00"));
 	            FriendList Flist = globalState.getFriendlist();
 	            List<Friend> listfriend = Flist.getFriendlist();
 	            for(int i=0;i<listfriend.size();i++)
 	            	params.add(new BasicNameValuePair("friends["+i+"]", listfriend.get(i).getEmail()));
 	            //params.add(new BasicNameValuePair("friends[1]", "helo@abc.com"));
 	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
-	            params.add(new BasicNameValuePair("coorx", Integer.toString(globalState.getCoorx())));
-	            params.add(new BasicNameValuePair("coory", Integer.toString(globalState.getCoory())));
-	            params.add(new BasicNameValuePair("lat", Double.toString(globalState.getLat())));
-	            params.add(new BasicNameValuePair("lon", Double.toString(globalState.getLon())));
-	            params.add(new BasicNameValuePair("floor_id", globalState.getFloor_id()));
+//	            params.add(new BasicNameValuePair("coorx", Integer.toString(globalState.getCoorx())));
+//	            params.add(new BasicNameValuePair("coory", Integer.toString(globalState.getCoory())));
+//	            params.add(new BasicNameValuePair("lat", Double.toString(globalState.getLat())));
+//	            params.add(new BasicNameValuePair("lon", Double.toString(globalState.getLon())));
+//	            params.add(new BasicNameValuePair("floor_id", globalState.getFloor_id()));
+//	            params.add(new BasicNameValuePair("floor_name", globalState.getFloor_name()));
 	            // getting JSON Object
 	            // Note that create product url accepts POST method
 	            JSONObject json = jsonParser.makeHttpRequest(url,"POST", params);
@@ -267,7 +268,6 @@ public class HomeActivity extends Activity {
                 if (resultJson.getInt(TAG_SUCCESS)==1)
                 {
                 	String id = resultJson.getString("message");
-                	id=id.substring(2, id.length()-2 );
                 	Log.d("id",id);
                 	globalState.setId(id);
                 	String url = "http://137.132.82.133/pg2/users_read_friends.php?user_id=" + id;

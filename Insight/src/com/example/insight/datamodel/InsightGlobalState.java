@@ -11,6 +11,7 @@ public class InsightGlobalState extends Application {
 	private double lat;
 	private double lon;
 	private String floor_id;
+	private String floor_name;
 	private Eventlist eventlist= new Eventlist();
 	private Event events= new Event();
 	private FriendList friendlist= new FriendList();
@@ -81,5 +82,11 @@ public class InsightGlobalState extends Application {
 	}
 	public void setFloor_id(String floor_id) {
 		this.floor_id = floor_id;
+	}
+	public String getFloor_name() {
+		return floor_name;
+	}
+	public void setFloor_name(String floor_name) {
+		this.floor_name = floor_name;
 	}
 }

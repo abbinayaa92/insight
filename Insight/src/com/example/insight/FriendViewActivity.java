@@ -81,7 +81,7 @@ public class FriendViewActivity extends MapActivity {
         Floor floor= new Floor();
         floor.id = friend.getFloor_id();
         Log.d("floor id", friend.getFloor_id());
-		floor.name = "com1_L1_37";
+		floor.name = friend.getFloor_name();
 		floor.location = new GeoPoint(indoorPosition.x, indoorPosition.y);
 		mapController.animateTo(floor.location);
 		mapView.invalidate();

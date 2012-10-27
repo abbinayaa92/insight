@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class EventActivity extends Activity {
 
-	private Context context;
+	private Context context1;
 	private Button Create;
 	private ListView eventListView;
 	private EditText Eventsearch;
@@ -84,7 +85,7 @@ public class EventActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         
-        context = this; 
+        context1 = this; 
         callingActivity = this;
         globalState = (InsightGlobalState) getApplication();
         Create=(Button)findViewById(R.id.create_event);
@@ -96,7 +97,7 @@ public class EventActivity extends Activity {
 		
         Create.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(context,EventForm.class));
+                startActivity(new Intent(context1,EventForm.class));
             } 
         });
        
@@ -117,19 +118,19 @@ public class EventActivity extends Activity {
 						}
 					}
 				}
-				eventlistba = new eventListBaseAdapter(context, filtered_events);
+				eventlistba = new eventListBaseAdapter(context1, filtered_events);
 				eventListView.setAdapter(eventlistba);
 			}
 		});
         
         String url = "http://137.132.82.133/pg2/events_read.php";
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
-		ProgressDialog dialog = new ProgressDialog(context);
+		ProgressDialog dialog = new ProgressDialog(context1);
 		dialog.setMessage("Retreiving events...");
 		dialog.setCancelable(false);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.show();
-		Test projectListTask = new Test(context, callingActivity,dialog);
+		Test projectListTask = new Test(context1, callingActivity,dialog);
 		projectListTask.execute(url);
 		
 		eventListView.setOnItemClickListener(new OnItemClickListener() {
@@ -148,12 +149,12 @@ public class EventActivity extends Activity {
 				int eventId = selectedEvent.getId();
 				Log.d("event title",Integer.toString(eventId));
 				String url = "http://137.132.82.133/pg2/events_read_ind.php?id=" + eventId;
-				ProgressDialog dialog = new ProgressDialog(context);
+				ProgressDialog dialog = new ProgressDialog(context1);
 				dialog.setMessage("Getting Event Info...");
 				dialog.setCancelable(false);
 				dialog.setCanceledOnTouchOutside(false);
 				dialog.show();
-				GetEventTask getProjectTask = new GetEventTask(context, callingActivity, dialog);
+				GetEventTask getProjectTask = new GetEventTask(context1, callingActivity, dialog);
 				getProjectTask.execute(url);
 			}
 		});
@@ -173,7 +174,7 @@ public class EventActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.setting:
-			startActivity(new Intent(context, FingerPrintActivity.class));
+			startActivity(new Intent(context1, FingerPrintActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -218,6 +219,7 @@ public class EventActivity extends Activity {
 			// received from broadcast
 			int coorx = intent.getIntExtra("coorX", 0);
 			int coory = intent.getIntExtra("coorY", 0);
+			String floor_name=intent.getStringExtra("name");
 			String floor_id =intent.getStringExtra("floorID");
 			
 			double latitude=intent.getIntExtra("userPositionX", 0);
@@ -237,18 +239,16 @@ public class EventActivity extends Activity {
 				globalState.setCoorx(coorx);
 				globalState.setCoory(coory);
 				globalState.setFloor_id(floor_id);
+				globalState.setFloor_name(floor_name);
+				Log.d("floor name",globalState.getFloor_name());
 				Log.d("floor id in eventact",globalState.getFloor_id());
 				globalState.setLat(latitude);
 				globalState.setLon(longitude);
 				addUser newevent = new addUser(context, callingActivity);
 				newevent.execute();
 				
-				ProgressDialog dialog = new ProgressDialog(context);
-				dialog.setMessage("Retreiving events...");
-				dialog.setCancelable(false);
-				dialog.setCanceledOnTouchOutside(false);
-				dialog.show();
-				Test projectListTask = new Test(context, callingActivity,dialog);
+				ProgressDialog dialog = new ProgressDialog(context1);
+				Test projectListTask = new Test(context1, callingActivity,dialog);
 				projectListTask.execute("http://137.132.82.133/pg2/events_read.php");
 			}
 
@@ -286,6 +286,7 @@ public class EventActivity extends Activity {
 		            params.add(new BasicNameValuePair("lat", Double.toString(globalState.getLat())));
 		            params.add(new BasicNameValuePair("lon", Double.toString(globalState.getLon())));
 		            params.add(new BasicNameValuePair("floor_id",globalState.getFloor_id()));
+		            params.add(new BasicNameValuePair("floor_name",globalState.getFloor_name()));
 		            // getting JSON Object
 		            // Note that create product url accepts POST method
 		            JSONObject json = jsonParser.makeHttpRequest(url,"POST", params);
@@ -337,7 +338,7 @@ public class EventActivity extends Activity {
 		protected void onPreExecute() {
     		if (!this.dialog.isShowing()) {
     			this.dialog.setMessage("Retrieving events...");
-    			this.dialog.show();
+    			//this.dialog.show();
     			this.dialog.setCanceledOnTouchOutside(false);
     			this.dialog.setCancelable(false);
     		}
@@ -381,22 +382,34 @@ public class EventActivity extends Activity {
 				Eventlist eventsContainer = gson.fromJson(result, Eventlist.class);
 				globalState.setEventlist(eventsContainer);
 				events = eventsContainer.getEvents();
+				Log.d("events size",""+events.size());
 				selected_events=new ArrayList<Event>();
 				int xcoor = globalState.getCoorx();
 				int ycoor = globalState.getCoory();
+				String floor_id=globalState.getFloor_id();
+				Log.d("floorid","hello"+floor_id);
 				Log.d("xcoor",Integer.toString(xcoor));
 				Log.d("ycoor",Integer.toString(ycoor));
 				for(int i=0;i<events.size();i++)
 				{
 					int xdiff = events.get(i).getCoorx() - xcoor;
 					int ydiff = events.get(i).getCoory() - ycoor;
-					if( (xdiff <=5 && xdiff >= -5) && (ydiff <=5 && ydiff >=-5))
+					String event_floor=events.get(i).getFloor_id();
+					if( (xdiff <=500 && xdiff >= -500) && (ydiff <=500 && ydiff >=-500) && floor_id.equals(event_floor))
 					{
-						Log.d("event selected", " "+ xdiff+" " +ydiff+ " "+ events.get(i).getTitle()+ "" +events.get(i).getCoorx()+ "" +events.get(i).getCoory());
+						Log.d("event selected", " "+ xdiff+" " +ydiff+ " "+ events.get(i).getTitle()+ "" +events.get(i).getCoorx()+ "" +events.get(i).getCoory()+""+events.get(i).getFloor_id());
 						selected_events.add(events.get(i));
 					}
 							
 				}
+				Event eventnew=new Event();
+				for(int i=0;i<selected_events.size();i++)
+				{
+					selected_events.get(i).setDistance(xcoor, ycoor);
+					System.out.println("selected:"+selected_events.get(i).getTitle()+" "+selected_events.get(i).getCoorx()+" "+selected_events.get(i).getCoory()+" "+selected_events.get(i).getDistance());
+				}
+				Collections.sort(selected_events, eventnew.new EventLocCompare());
+				Collections.reverse(selected_events);
 				eventlistba = new eventListBaseAdapter(context, selected_events);
 				eventListView.setAdapter(eventlistba);
 				
