@@ -120,5 +120,13 @@
         android:id="@+id/videoView1"
         android:layout_width="match_parent"
         android:layout_height="182dp" />
+    
+     <Button
+        android:id="@+id/AttendEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Attend Event" />
+
 
 </LinearLayout>

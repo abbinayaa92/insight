@@ -11,9 +11,11 @@ import java.util.List;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -66,10 +68,12 @@ import android.widget.AdapterView.OnItemClickListener;
 public class EventActivity extends Activity {
 
 	private Context context1;
-	private Button Create;
+	private Button Create,Filter;
 	private ListView eventListView;
 	private EditText Eventsearch;
 	private InsightGlobalState globalState;
+	private AlertDialog alert;
+	private Event newevent= new Event();
 	private ArrayList<Event> events = new ArrayList<Event>();
 	private Activity callingActivity;
 	private eventListBaseAdapter eventlistba;
@@ -91,9 +95,41 @@ public class EventActivity extends Activity {
         Create=(Button)findViewById(R.id.create_event);
         eventListView=(ListView)findViewById(R.id.EventList);
         Eventsearch = (EditText) findViewById(R.id.EventSearch);
+        Filter=(Button) findViewById(R.id.myfilterButton);
         
         registerReceiver(broadcastReceiver, new IntentFilter("FingerPrint_LOCATION_UPDATE"));
         
+        final CharSequence[] items = { "Location", "Popularity", "Date" };
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(context1);
+		builder.setTitle("Sort By");
+		builder.setItems(items, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) {
+				if(!Eventsearch.getText().equals(""))
+						Eventsearch.setText("");
+				switch (item) {
+				case 0:
+					Collections.sort(selected_events, newevent.new EventLocCompare());
+					Collections.reverse(selected_events);
+					break;
+				case 1:
+					Collections.sort(selected_events, newevent.new EventPopCompare());
+					//Collections.reverse(selected_events);
+					for(int i=0;i<selected_events.size();i++)
+						Log.d("event pop:", selected_events.get(i).getPop()+"  event title:"+ selected_events.get(i).getTitle());
+					break;
+				case 2:
+					Collections.sort(selected_events, newevent.new EventDateCompare());
+					Collections.reverse(selected_events);
+					
+					break;
+				}
+				
+				eventlistba = new eventListBaseAdapter(context1, selected_events);
+				eventListView.setAdapter(eventlistba);
+			}
+		});
+		alert = builder.create();
 		
         Create.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -101,6 +137,13 @@ public class EventActivity extends Activity {
             } 
         });
        
+        Filter.setOnClickListener(new View.OnClickListener() {
+
+			public void onClick(View v) {
+					alert.show();
+			}
+		});
+        
         Eventsearch.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
 			}
@@ -132,6 +175,8 @@ public class EventActivity extends Activity {
 		dialog.show();
 		Test projectListTask = new Test(context1, callingActivity,dialog);
 		projectListTask.execute(url);
+		
+		
 		
 		eventListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -402,13 +447,13 @@ public class EventActivity extends Activity {
 					}
 							
 				}
-				Event eventnew=new Event();
+				
 				for(int i=0;i<selected_events.size();i++)
 				{
 					selected_events.get(i).setDistance(xcoor, ycoor);
 					System.out.println("selected:"+selected_events.get(i).getTitle()+" "+selected_events.get(i).getCoorx()+" "+selected_events.get(i).getCoory()+" "+selected_events.get(i).getDistance());
 				}
-				Collections.sort(selected_events, eventnew.new EventLocCompare());
+				Collections.sort(selected_events, newevent.new EventLocCompare());
 				Collections.reverse(selected_events);
 				eventlistba = new eventListBaseAdapter(context, selected_events);
 				eventListView.setAdapter(eventlistba);

@@ -14,6 +14,7 @@ public class Event {
 	private int coory;
 	private String floor_id;
 	private double distance;
+	private int pop;
 	
 	
 	public String getTitle() {
@@ -80,11 +81,33 @@ public class Event {
 			this.distance = Math.sqrt((x-coorx)^2 + (y-coory)^2);
 	}
 	
+	public int getPop() {
+		return pop;
+	}
+	public void setPop(int pop) {
+		this.pop = pop;
+	}
+
 	public class EventLocCompare implements Comparator<Event> {
 
 		public int compare(Event o1, Event o2) {
 			Double d2= new Double(o2.getDistance());
 			return (d2.compareTo(o1.getDistance()));
+		}
+	}
+	
+	public class EventDateCompare implements Comparator<Event> {
+
+		public int compare(Event o1, Event o2) {
+			return (o2.getDate().compareTo(o1.getDate()));
+		}
+	}
+	
+	public class EventPopCompare implements Comparator<Event> {
+
+		public int compare(Event o1, Event o2) {
+			Integer d2= new Integer(o2.getPop());
+			return (d2.compareTo(o1.getPop()));
 		}
 	}
 

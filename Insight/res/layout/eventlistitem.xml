@@ -15,13 +15,15 @@
         android:id="@+id/eventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:textSize="20sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/eventVenue"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff" />
     
     </LinearLayout>
 
@@ -35,7 +37,8 @@
         <TextView
         android:id="@+id/eventDate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,7 +52,8 @@
         <TextView
         android:id="@+id/eventTime"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff" />
     </LinearLayout>
 
 </LinearLayout>

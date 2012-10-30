@@ -29,7 +29,8 @@
         <uses-library android:name="com.google.android.maps" /> 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,7 +53,8 @@
         </activity>
         <activity
             android:name=".EventActivity"
-            android:label="@string/title_activity_event" >
+            android:label="@string/title_activity_event" 
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -61,7 +63,8 @@
         </activity>
         <activity
             android:name=".FriendActivity"
-            android:label="@string/title_activity_friend" >
+            android:label="@string/title_activity_friend"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -70,7 +73,8 @@
         </activity>
         <activity
             android:name=".EventForm"
-            android:label="@string/title_activity_event_form" >
+            android:label="@string/title_activity_event_form"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -79,7 +83,8 @@
         </activity>
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home" >
+            android:label="@string/title_activity_home" 
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -88,14 +93,16 @@
         </activity>
         <activity
             android:name=".EventViewActivity"
-            android:label="@string/title_activity_event_view" >
+            android:label="@string/title_activity_event_view"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FingerPrintActivity" />
+        <activity android:name=".FingerPrintActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".FingerPrintService"
@@ -105,7 +112,8 @@
 
         <activity
             android:name=".FriendViewActivity"
-            android:label="@string/title_activity_friend_view" >
+            android:label="@string/title_activity_friend_view"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

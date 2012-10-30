@@ -150,7 +150,7 @@ public class HomeActivity extends Activity {
              	JSONObject jsonResponse = new JSONObject(jsonOutput);
             	JSONObject m = (JSONObject)jsonResponse.get("feed");
             	JSONArray entries =(JSONArray)m.getJSONArray("entry");
-            	Log.d("JSON entries",entries.toString());
+            	//Log.d("JSON entries",entries.toString());
             	for (int i=0 ; i<entries.length() ; i++) {
             		  contact= new Friend();
             		JSONObject entry = entries.getJSONObject(i);
@@ -167,7 +167,6 @@ public class HomeActivity extends Activity {
             			Log.d("error","no phone or email");
             		}
             		
-            		Log.d("contact info",entry.toString());
             		if(email!=null)
             		{
             			JSONObject email1 = email.getJSONObject(0);
@@ -270,6 +269,10 @@ public class HomeActivity extends Activity {
                 	String id = resultJson.getString("message");
                 	Log.d("id",id);
                 	globalState.setId(id);
+                	SignedEvents signedEventTask = new SignedEvents(context, callingActivity);
+            		String signedurl="http://137.132.82.133/pg2/events_pop_read_user.php?user_id="+globalState.getId();
+            		Log.d("signedurl",signedurl);
+            		signedEventTask.execute(signedurl);
                 	String url = "http://137.132.82.133/pg2/users_read_friends.php?user_id=" + id;
     				ProgressDialog dialog = new ProgressDialog(context);
     				dialog.setMessage("Getting Friend Info...");
@@ -287,6 +290,56 @@ public class HomeActivity extends Activity {
 		}
 	}
     
+    public class SignedEvents extends AsyncTask<String, Void, String> {
+		private final Context context;
+		private final Activity callingActivity;
+
+		public SignedEvents(Context context, Activity callingActivity) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+		}
+
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet httpGet = new HttpGet(url);
+				try {
+					HttpResponse execute = client.execute(httpGet);
+					InputStream content = execute.getEntity().getContent();
+
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+					String s = "";
+					while ((s = buffer.readLine()) != null) {
+						response += s;
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			try {
+				JSONObject resultJson = new JSONObject(result);
+				Log.d("SignedupEvents", resultJson.toString());
+				Gson gson = new Gson();
+				Eventlist eventsContainer = gson.fromJson(result, Eventlist.class);
+				globalState.setSignedup(eventsContainer);
+				
+				Log.d("size signed up", Integer.toString(globalState.getSignedup().size()));
+				
+			} catch (JSONException e) {
+
+				e.printStackTrace();
+			}
+		}
+	}
     
     public class GetFriendTask extends AsyncTask<String, Void, String> {
 

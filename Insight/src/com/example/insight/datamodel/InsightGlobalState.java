@@ -16,6 +16,7 @@ public class InsightGlobalState extends Application {
 	private Event events= new Event();
 	private FriendList friendlist= new FriendList();
 	private Friend friends= new Friend();
+	private Eventlist signedup= new Eventlist();
 	
 	public Eventlist getEventlist() {
 		return eventlist;
@@ -88,5 +89,11 @@ public class InsightGlobalState extends Application {
 	}
 	public void setFloor_name(String floor_name) {
 		this.floor_name = floor_name;
+	}
+	public Eventlist getSignedup() {
+		return signedup;
+	}
+	public void setSignedup(Eventlist signedup) {
+		this.signedup = signedup;
 	}
 }

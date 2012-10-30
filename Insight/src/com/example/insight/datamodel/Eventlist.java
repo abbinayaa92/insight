@@ -13,4 +13,19 @@ public class Eventlist {
 	public void setEvents(ArrayList<Event> events) {
 		this.events = events;
 	}
+	
+	public void addEvent (Event event)
+	{
+		this.events.add(event);
+	}
+	
+	public int size()
+	{
+		return this.events.size();
+	}
+	
+	public Event get(int index)
+	{
+		return this.events.get(index);
+	}
 }
