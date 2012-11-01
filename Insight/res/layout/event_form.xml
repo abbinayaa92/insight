@@ -4,7 +4,19 @@
     android:layout_height="match_parent"
     android:layout_margin="10dp"
     android:orientation="vertical" >
-
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.92"
+        android:orientation="vertical" >
+        
+    <LinearLayout
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical" >
+        
     <EditText
         android:id="@+id/newEventTitle"
         android:layout_width="match_parent"
@@ -14,36 +26,49 @@
 
         <requestFocus />
     </EditText>
-    
+
     <EditText
         android:id="@+id/newEventDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="description" />
-    <EditText
-        android:id="@+id/newEventVenue"
-        android:layout_width="match_parent"
-        android:layout_height="60dp" >
-    </EditText>
-    
-    
+        android:hint="description" />
+
     <EditText
         android:id="@+id/newEventDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Date"/>
-    
+        android:hint="Date" />
+
+    <Spinner
+        android:id="@+id/newEventVenue"
+        android:layout_width="match_parent"
+        android:layout_height="54dp" />
+
     <TimePicker
         android:id="@+id/newEventTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/attachments"
+        android:layout_width="match_parent"
+        android:layout_height="350dp" >
+
+    </ListView>
+	
+    <Button
+        android:id="@+id/Upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Upload" />
     
     <Button
         android:id="@+id/AddEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add" />
-
+    </LinearLayout>
+     </ScrollView>
 </LinearLayout>

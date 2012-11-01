@@ -49,6 +49,9 @@
         <item>RADAR</item>
     </string-array>
 
+    <string-array name="Venue_Array">
+        <item>COM 1, Foyer Area</item>
+    </string-array>
     <string name="title_activity_friend_view">FriendViewActivity</string>
 
 </resources>
