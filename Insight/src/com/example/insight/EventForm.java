@@ -1,6 +1,15 @@
 package com.example.insight;
 
 import com.example.insight.datamodel.InsightGlobalState;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -52,6 +61,7 @@ public class EventForm extends Activity {
 	JSONParser jsonParser = new JSONParser();
 	ListView attachments;
 	public static ArrayList<String> attachment_list = new ArrayList<String>();
+	public static ArrayList<String> url_list = new ArrayList<String>();
 	private String url = "http://137.132.82.133/pg2/events_add.php";
 	private static final String TAG_SUCCESS = "success";
 	static final int DEFAULTDATESELECTOR_ID = 0;
@@ -61,6 +71,7 @@ public class EventForm extends Activity {
 	InsightGlobalState obj;
 	private static final int SELECT_VIDEO = 2;
 	String selectedPath = "";
+	String eventid="";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +123,11 @@ public class EventForm extends Activity {
         
         addevent.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+//            	for(int i=0;i<attachment_list.size();i++)
+//            	{
+//            		UploadVid doUpload = new UploadVid(context, callingActivity,attachment_list.get(i));
+//                    doUpload.execute();
+//            	}
             	addTest newevent = new addTest(context, callingActivity);
         		newevent.execute();
             } 
@@ -162,8 +178,7 @@ public class EventForm extends Activity {
                 attachment_list.add(selectedPath);
                 attachments.setAdapter(adapter_attachlist);
                 
-                //UploadVid doUpload = new UploadVid(context, callingActivity);
-                //doUpload.execute();
+                
                 
             }
  
@@ -254,6 +269,15 @@ public class EventForm extends Activity {
 			
                 if (result.equals("1")) {
                     // successfully created product
+                	try {
+						JSONObject resultJson = new JSONObject(result);
+						eventid = resultJson.getString("message");
+	                	Log.d("eventid",eventid);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                	
                   Log.d("result","success");
                     // closing this screen
                     
@@ -274,6 +298,109 @@ public class EventForm extends Activity {
 	}
 
 	
+	public class UploadVid extends AsyncTask<String, Void, String> {
+    	private final Context context;
+    	private final Activity callingActivity;
+        HttpURLConnection conn = null;
+        DataOutputStream dos = null;
+        DataInputStream inStream = null;
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary =  "*****";
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1*1024*1024;
+        String path;
+        String responseFromServer = "";
+        public String urlString = "http://137.132.82.133/pg2/mult_upload.php";
+
+    	public UploadVid(Context context, Activity callingActivity, String path) {
+    		this.context = context;
+    		this.callingActivity = callingActivity;
+    		this.path=path;
+    	}
+
+    	
+    	 protected String doInBackground(String... args) {
+    		 String str="";
+     
+    		 try
+    	        {
+    	         //------------------ CLIENT REQUEST
+    	        FileInputStream fileInputStream = new FileInputStream(new File(path) );
+    	         // open a URL connection to the Servlet
+    	         URL url = new URL(urlString);
+    	         // Open a HTTP connection to the URL
+    	         conn = (HttpURLConnection) url.openConnection();
+    	         // Allow Inputs
+    	         conn.setDoInput(true);
+    	         // Allow Outputs
+    	         conn.setDoOutput(true);
+    	         // Don't use a cached copy.
+    	         conn.setUseCaches(false);
+    	         // Use a post method.
+    	         conn.setRequestMethod("POST");
+    	         conn.setRequestProperty("Connection", "Keep-Alive");
+    	         conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+    	         dos = new DataOutputStream( conn.getOutputStream() );
+    	         dos.writeBytes(twoHyphens + boundary + lineEnd);
+    	         System.out.println("uploadedfile" +"\t"+ path + "\t" + lineEnd);
+    	         dos.writeBytes("Content-Disposition: form-data; name=uploadedfile;filename="+ path + lineEnd);
+    	         dos.writeBytes(lineEnd);
+    	         // create a buffer of maximum size
+    	         bytesAvailable = fileInputStream.available();
+    	         bufferSize = Math.min(bytesAvailable, maxBufferSize);
+    	         buffer = new byte[bufferSize];
+    	         // read file and write it into form...
+    	         bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+    	         while (bytesRead > 0)
+    	         {
+    	          dos.write(buffer, 0, bufferSize);
+    	          bytesAvailable = fileInputStream.available();
+    	          bufferSize = Math.min(bytesAvailable, maxBufferSize);
+    	          bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+    	         }
+    	         // send multipart form data necesssary after file data...
+    	         dos.writeBytes(lineEnd);
+    	         dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+    	         // close streams
+    	         Log.e("Debug","File is written");
+    	         fileInputStream.close();
+    	         dos.flush();
+    	         dos.close();
+    	        }
+    	        catch (MalformedURLException ex)
+    	        {
+    	             Log.d("Debug", "error: " + ex.getMessage(), ex);
+    	        }
+    	        catch (IOException ioe)
+    	        {
+    	             Log.d("Debug", "error: " + ioe.getMessage(), ioe);
+    	        }
+
+  		   try {
+  	              inStream = new DataInputStream ( conn.getInputStream() );
+  	             
+  	 
+  	              while (( str = inStream.readLine()) != null)
+  	              {
+  	                   Log.e("Debug","Server Response "+str);
+  	              }
+  	              inStream.close();
+  	              
+  	 
+  	        }
+  	        catch (IOException ioex){
+  	             Log.e("Debug", "error: " + ioex.getMessage(), ioex);
+  	        }
+  		 return str;
+    	}
+
+    	@Override
+    	protected void onPostExecute(String result) {
+    		
+    }
+}
 
 
   public class AttachmentBaseAdapter extends BaseAdapter {
