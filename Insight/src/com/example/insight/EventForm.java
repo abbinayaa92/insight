@@ -162,7 +162,6 @@ public class EventForm extends Activity {
                 attachment_list.add(selectedPath);
                 attachments.setAdapter(adapter_attachlist);
                 
-                
                 //UploadVid doUpload = new UploadVid(context, callingActivity);
                 //doUpload.execute();
                 
