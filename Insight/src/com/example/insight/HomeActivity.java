@@ -326,12 +326,15 @@ public class HomeActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			try {
+				
 				JSONObject resultJson = new JSONObject(result);
+				if(resultJson.getInt("success")==1)
+				{
 				Log.d("SignedupEvents", resultJson.toString());
 				Gson gson = new Gson();
 				Eventlist eventsContainer = gson.fromJson(result, Eventlist.class);
 				globalState.setSignedup(eventsContainer);
-				
+				}
 				Log.d("size signed up", Integer.toString(globalState.getSignedup().size()));
 				
 			} catch (JSONException e) {
