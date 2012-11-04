@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
+    android:background="#000000"
     android:orientation="vertical" >
     
     <LinearLayout
@@ -15,6 +15,7 @@
         android:id="@+id/ContactImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:src="@drawable/contact" />
     
      <TextView
@@ -22,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/name"
+        android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
    </LinearLayout> 
@@ -30,7 +32,8 @@
         android:id="@+id/Friendmobile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="25dp"
+        android:textColor="#ffffff"
         android:text="@string/mobile"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -38,15 +41,16 @@
         android:id="@+id/Friendemail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="25dp"
+        android:textColor="#ffffff"
         android:text="email address"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
    <com.google.android.maps.MapView
         android:id="@+id/mapview"
-        android:layout_width="fill_parent"
-        android:layout_height="186dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
         android:apiKey="096zEE3HXAxQnYHuvDSFTkAW_et58LC4M7cZmRA"
         android:clickable="true" /> 
 

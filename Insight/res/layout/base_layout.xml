@@ -9,14 +9,17 @@
         android:id="@+id/tv_videolistname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:text="video_name"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ImageButton
         android:id="@+id/remove_button"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="0.25"
         android:src="@drawable/close_icon"
         android:text="Button" />
     

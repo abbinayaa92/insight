@@ -6,4 +6,10 @@
         android:title="SET">
     </item>
     
+      <item
+        android:id="@+id/create_newevent"
+        android:showAsAction="always"
+        android:title="CREATE EVENT">
+    </item>
+    
 </menu>

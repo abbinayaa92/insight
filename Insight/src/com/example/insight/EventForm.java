@@ -65,8 +65,8 @@ public class EventForm extends Activity {
 	private String url = "http://137.132.82.133/pg2/events_add.php";
 	private static final String TAG_SUCCESS = "success";
 	static final int DEFAULTDATESELECTOR_ID = 0;
-	String[][] Venue_coord={{"COM 1, Foyer Area","460","150"},{"0","0","0"},{"0","0","0"}};
-	String xcoord, ycoord;
+	String[][] Venue_coord={{"Programming Lab 1","270","170","COM1_B1.jpg"},{"Programming Lab 2","480","235","COM1_B1.jpg"},{"Programming Lab 3","480","160","COM1_B1.jpg"}, {"Programming Lab 4","350","170","COM1_B1.jpg"}, {"Level 1 Lobby","502","310","COM1_L1.jpg"},{"Graduate Student Lounge","675","250","COM1_L1.jpg"},{"Foyer Area","485","175","COM1_L2.jpg"},{"Computing Club","850","150","COM1_L2.jpg"},{"Student Lounge","615","245","COM1_L2.jpg"},{"VC Room","750","125","COM1_L2.jpg"}};
+	String xcoord, ycoord,floor_id;
 	private AttachmentBaseAdapter adapter_attachlist;
 	InsightGlobalState obj;
 	private static final int SELECT_VIDEO = 2;
@@ -123,13 +123,13 @@ public class EventForm extends Activity {
         
         addevent.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//            	for(int i=0;i<attachment_list.size();i++)
-//            	{
-//            		UploadVid doUpload = new UploadVid(context, callingActivity,attachment_list.get(i));
-//                    doUpload.execute();
-//            	}
-            	addTest newevent = new addTest(context, callingActivity);
-        		newevent.execute();
+            	url_list.clear();
+            	for(int i=0;i<attachment_list.size();i++)
+            	{
+            		UploadVid doUpload = new UploadVid(context, callingActivity,attachment_list.get(i));
+                    doUpload.execute();
+            	}
+            	
             } 
         });
         
@@ -229,6 +229,7 @@ public class EventForm extends Activity {
 	            params.add(new BasicNameValuePair("date", date.getText().toString()));
 	            params.add(new BasicNameValuePair("time", "00:00"));
 	            params.add(new BasicNameValuePair("venue", venue.getSelectedItem().toString()));
+	          
 	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
 	            // get the coordinates for the event
 	            for (int i=0;i<Venue_coord.length;i++)
@@ -237,10 +238,12 @@ public class EventForm extends Activity {
 	            	{
 	            		xcoord=Venue_coord[i][1];
 	            		ycoord=Venue_coord[i][2];
+	            		floor_id=Venue_coord[i][3];
 	            	}
 	            }
-	            
-	            
+	            params.add(new BasicNameValuePair("floor_id", floor_id));
+	            for(int i=0;i<url_list.size();i++)
+	            	params.add(new BasicNameValuePair("mult["+i+"]", url_list.get(i)));
 	            params.add(new BasicNameValuePair("coorx", xcoord));
 	            params.add(new BasicNameValuePair("coory", ycoord));
 	 
@@ -254,7 +257,7 @@ public class EventForm extends Activity {
 	            int success;
 				try {
 					success = json.getInt(TAG_SUCCESS);
-					return Integer.toString(success);
+					return json.toString();
 					 
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -267,24 +270,24 @@ public class EventForm extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			
-                if (result.equals("1")) {
+			
                     // successfully created product
                 	try {
-						JSONObject resultJson = new JSONObject(result);
+						
+                		JSONObject resultJson = new JSONObject(result);
+                        if (resultJson.getInt("success")==1) {
 						eventid = resultJson.getString("message");
 	                	Log.d("eventid",eventid);
+                        } else {
+                            // failed to create product
+                        	Log.d("result","failure");
+                        }
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
                 	
-                  Log.d("result","success");
-                    // closing this screen
                     
-                } else {
-                    // failed to create product
-                	Log.d("result","failure");
-                }
                 Intent eventsViewIntent = new Intent(context, HomeActivity.class);
 				callingActivity.startActivity(eventsViewIntent);
 				callingActivity.finish();
@@ -323,7 +326,7 @@ public class EventForm extends Activity {
     	
     	 protected String doInBackground(String... args) {
     		 String str="";
-     
+    		 String response="";
     		 try
     	        {
     	         //------------------ CLIENT REQUEST
@@ -385,20 +388,42 @@ public class EventForm extends Activity {
   	              while (( str = inStream.readLine()) != null)
   	              {
   	                   Log.e("Debug","Server Response "+str);
+  	                   response=str;
   	              }
   	              inStream.close();
-  	              
+  	             
   	 
   	        }
   	        catch (IOException ioex){
   	             Log.e("Debug", "error: " + ioex.getMessage(), ioex);
   	        }
-  		 return str;
+  		   
+  		 return response;
     	}
 
     	@Override
     	protected void onPostExecute(String result) {
-    		
+    		Log.d("result video upload","hello:"+ result);
+    		JSONObject resultJson;
+			try {
+				resultJson = new JSONObject(result);
+				 if (resultJson.getInt("success")==1)
+		            {
+		            	String url = resultJson.getString("message");
+		            	url_list.add(url);
+		            	Log.d("attachment list size",""+attachment_list.size());
+		            	if(url_list.size()==attachment_list.size())
+		            	{
+		            		Log.d("output","starting create");
+		            		addTest newevent = new addTest(context, callingActivity);
+		            		newevent.execute();
+		            	}
+		            }
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+           
     }
 }
 

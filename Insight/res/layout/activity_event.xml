@@ -18,7 +18,7 @@
         android:id="@+id/EventSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Type to search Events                 "
+        android:hint="Type to search Events"
         android:singleLine="true"
         android:textSize="20sp" />
 
@@ -32,12 +32,7 @@
         android:textColor="#05261f" />
 
     </LinearLayout>
-    
-      <Button
-          android:id="@+id/create_event"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/create" />
+    
 
     <ListView
         android:id="@+id/EventList"

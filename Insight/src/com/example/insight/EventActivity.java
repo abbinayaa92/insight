@@ -82,6 +82,7 @@ public class EventActivity extends Activity {
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/users_add.php";
 	private static final String TAG_SUCCESS = "success";
+	private int flag=0;
 	
 	
     @Override
@@ -92,7 +93,6 @@ public class EventActivity extends Activity {
         context1 = this; 
         callingActivity = this;
         globalState = (InsightGlobalState) getApplication();
-        Create=(Button)findViewById(R.id.create_event);
         eventListView=(ListView)findViewById(R.id.EventList);
         Eventsearch = (EditText) findViewById(R.id.EventSearch);
         Filter=(Button) findViewById(R.id.myfilterButton);
@@ -130,12 +130,6 @@ public class EventActivity extends Activity {
 			}
 		});
 		alert = builder.create();
-		
-        Create.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(new Intent(context1,EventForm.class));
-            } 
-        });
        
         Filter.setOnClickListener(new View.OnClickListener() {
 
@@ -167,6 +161,7 @@ public class EventActivity extends Activity {
 		});
         
         String url = "http://137.132.82.133/pg2/events_read.php";
+        flag=0;
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		ProgressDialog dialog = new ProgressDialog(context1);
 		dialog.setMessage("Retreiving events...");
@@ -175,6 +170,7 @@ public class EventActivity extends Activity {
 		dialog.show();
 		Test projectListTask = new Test(context1, callingActivity,dialog);
 		projectListTask.execute(url);
+		
 		
 		
 		
@@ -220,6 +216,10 @@ public class EventActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.setting:
 			startActivity(new Intent(context1, FingerPrintActivity.class));
+			return true;
+		case R.id.create_newevent:
+			startActivity(new Intent(context1,EventForm.class));
+			callingActivity.finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -291,7 +291,7 @@ public class EventActivity extends Activity {
 				globalState.setLon(longitude);
 				addUser newevent = new addUser(context, callingActivity);
 				newevent.execute();
-				
+				flag=1;
 				ProgressDialog dialog = new ProgressDialog(context1);
 				Test projectListTask = new Test(context1, callingActivity,dialog);
 				projectListTask.execute("http://137.132.82.133/pg2/events_read.php");
@@ -431,6 +431,8 @@ public class EventActivity extends Activity {
 				selected_events=new ArrayList<Event>();
 				int xcoor = globalState.getCoorx();
 				int ycoor = globalState.getCoory();
+				if(flag==1)
+				{
 				String floor_id=globalState.getFloor_id();
 				Log.d("floorid","hello"+floor_id);
 				Log.d("xcoor",Integer.toString(xcoor));
@@ -447,6 +449,9 @@ public class EventActivity extends Activity {
 					}
 							
 				}
+				}
+				else if(flag==0)
+					selected_events=events;
 				
 				for(int i=0;i<selected_events.size();i++)
 				{
@@ -526,6 +531,7 @@ public class EventActivity extends Activity {
     			JSONObject resultJson = new JSONObject(result);
     			if (resultJson.getInt("success") ==1 ) {
     				JSONArray eventJson = new JSONArray(resultJson.getString("events"));
+    				Log.d("json event array",eventJson.toString());
     				Gson gson = new Gson();
     				Event event = gson.fromJson(eventJson.getJSONObject(0).toString(), Event.class);
     				InsightGlobalState globalState = (InsightGlobalState) callingActivity.getApplication();

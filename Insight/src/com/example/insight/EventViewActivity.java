@@ -1,6 +1,7 @@
 package com.example.insight;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -12,17 +13,26 @@ import com.example.insight.EventForm.addTest;
 import com.example.insight.datamodel.Event;
 import com.example.insight.datamodel.Eventlist;
 import com.example.insight.datamodel.InsightGlobalState;
+import com.example.insight.datamodel.Event.EventDateCompare;
+import com.example.insight.datamodel.Event.EventLocCompare;
+import com.example.insight.datamodel.Event.EventPopCompare;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
 public class EventViewActivity extends Activity {
 
@@ -31,6 +41,9 @@ public class EventViewActivity extends Activity {
 	private Eventlist signedup;
 	private TextView title, desc, venue,date, time;
 	private Button attendevent;
+	private AlertDialog alert;
+	private ImageView vid;
+	ArrayList<String> multimedia=new ArrayList<String>();
 	Context context;
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/events_pop_add.php";
@@ -49,7 +62,7 @@ public class EventViewActivity extends Activity {
         time= (TextView) findViewById(R.id.Timeinfo);
         attendevent =(Button) findViewById(R.id.AttendEvent);
         globalState = (InsightGlobalState) getApplication();
-
+        vid =(ImageView)findViewById(R.id.thumbnail);
 		event = globalState.getEvents();
 		signedup= globalState.getSignedup();
 		title.setText(event.getTitle());
@@ -57,7 +70,44 @@ public class EventViewActivity extends Activity {
 		date.setText(event.getDate());
 		desc.setText(event.getDescription());
 		time.setText(event.getTime());
+		vid.setVisibility(View.GONE);
 		
+		for(int i=0;i<event.getMult().size();i++)
+		{
+			vid.setVisibility(View.VISIBLE);
+			Log.d("inside mul loop","video url"+event.getMult().get(i).getMult());
+			multimedia.add(event.getMult().get(i).getMult());
+		}
+
+		final CharSequence[] items = multimedia.toArray(new CharSequence[multimedia.size()]);
+			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			builder.setTitle("Choose File:");
+			builder.setItems(items, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					switch (item) {
+					default:
+						String urlpath=multimedia.get(item);
+						Log.d("url path",urlpath);
+//						 Intent i= new Intent (Intent.ACTION_VIEW);
+//						 i.setData(Uri.parse(urlpath));
+//						 startActivity(i);
+						 Intent eventViewIntent = new Intent(context, Playvid.class);
+						 eventViewIntent.putExtra("url", urlpath);
+	    				 startActivity(eventViewIntent);
+						 break;
+					}
+					
+				}
+			});
+			alert = builder.create();
+			
+			 vid.setOnClickListener(new View.OnClickListener() {
+
+					public void onClick(View v) {
+							alert.show();
+					}
+				});
+			
 		for(int i=0;i<signedup.size();i++)
 		{
 			Log.d("singed up id",""+signedup.get(i).getId());
@@ -135,6 +185,7 @@ public class EventViewActivity extends Activity {
                   Eventlist signupevents=globalState.getSignedup();
                   signupevents.addEvent(event);
                   globalState.setSignedup(signupevents);
+                  Toast.makeText(context, "You have successfully signed up for the event", Toast.LENGTH_LONG).show();
                     // closing this screen
                     
                 } else {

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
+    android:background="#000000"
     android:orientation="vertical" >
 
     <ScrollView
@@ -14,37 +14,50 @@
     <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
     android:orientation="vertical" >
         
     <EditText
         android:id="@+id/newEventTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="20"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:layout_marginBottom="10sp"
+        android:background="@drawable/textbackground"
         android:hint="title" >
-
-        <requestFocus />
     </EditText>
 
     <EditText
         android:id="@+id/newEventDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="20"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:layout_marginBottom="10sp"
+        android:background="@drawable/textbackground"
         android:hint="description" />
 
     <EditText
         android:id="@+id/newEventDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="20"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:layout_marginBottom="10sp"
+        android:background="@drawable/textbackground"
+        android:editable="false"
         android:hint="Date" />
 
     <Spinner
         android:id="@+id/newEventVenue"
         android:layout_width="match_parent"
-        android:layout_height="54dp" />
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_marginBottom="10sp"
+        android:background="#ffffff" />
 
     <TimePicker
         android:id="@+id/newEventTime"
@@ -54,11 +67,17 @@
     <ListView
         android:id="@+id/attachments"
         android:layout_width="match_parent"
-        android:layout_height="350dp" >
-
+        android:layout_height="200dp" >
     </ListView>
-	
-    <Button
+  
+    </LinearLayout>
+     </ScrollView>
+     
+       <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+      <Button
         android:id="@+id/Upload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,5 +89,4 @@
         android:layout_height="wrap_content"
         android:text="@string/add" />
     </LinearLayout>
-     </ScrollView>
 </LinearLayout>

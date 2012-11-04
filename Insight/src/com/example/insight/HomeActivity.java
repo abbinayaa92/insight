@@ -79,12 +79,12 @@ public class HomeActivity extends Activity {
         currentActivity=this;
         context=this;
         globalState = (InsightGlobalState) getApplication();
-        globalState.setCoorx(0);
-        globalState.setCoory(0);
-        globalState.setLat(0);
-        globalState.setLon(0);
-        globalState.setFloor_id("");
-        globalState.setFloor_name("");
+        globalState.setCoorx(550);
+        globalState.setCoory(75);
+        globalState.setLat(1295123);
+        globalState.setLon(103773873);
+        globalState.setFloor_id("COM1_L1.jpg");
+        globalState.setFloor_name("COM1_L1_37");
         contactlist = new ArrayList<Friend>();
         friendlist = new FriendList();
         TabHost tabHost = (TabHost)findViewById(R.id.tabhost);

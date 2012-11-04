@@ -1,5 +1,6 @@
 package com.example.insight.datamodel;
 import java.lang.Math ;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Event {
@@ -15,7 +16,7 @@ public class Event {
 	private String floor_id;
 	private double distance;
 	private int pop;
-	
+	private ArrayList<Multimedia> mult= new ArrayList<Multimedia>();
 	
 	public String getTitle() {
 		return title;
@@ -86,6 +87,13 @@ public class Event {
 	}
 	public void setPop(int pop) {
 		this.pop = pop;
+	}
+
+	public ArrayList<Multimedia> getMult() {
+		return mult;
+	}
+	public void setMult(ArrayList<Multimedia> mult) {
+		this.mult = mult;
 	}
 
 	public class EventLocCompare implements Comparator<Event> {

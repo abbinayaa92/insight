@@ -48,10 +48,21 @@
         <item>Hyperbolic</item>
         <item>RADAR</item>
     </string-array>
-
     <string-array name="Venue_Array">
         <item>COM 1, Foyer Area</item>
+        <item>Programming Lab 1</item>
+		<item>Programming Lab 2</item>
+		<item>Programming Lab 3</item>
+		<item>Programming Lab 4</item>
+		<item>Lobby</item>
+		<item>Graduate Student Lounge</item>
+		<item>Foyer Area</item>
+		<item>Computing Club</item>
+		<item>Student Lounge</item>
+		<item>VC Room</item>
     </string-array>
+
     <string name="title_activity_friend_view">FriendViewActivity</string>
+    <string name="title_activity_playvid">Playvid</string>
 
 </resources>
