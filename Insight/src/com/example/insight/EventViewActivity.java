@@ -9,7 +9,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.insight.EventForm.AttachmentBaseAdapter;
 import com.example.insight.EventForm.addTest;
+import com.example.insight.EventForm.AttachmentBaseAdapter.ViewHolder;
 import com.example.insight.datamodel.Event;
 import com.example.insight.datamodel.Eventlist;
 import com.example.insight.datamodel.InsightGlobalState;
@@ -26,9 +28,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +50,7 @@ public class EventViewActivity extends Activity {
 	private AlertDialog alert;
 	private ImageView vid;
 	ArrayList<String> multimedia=new ArrayList<String>();
+	ArrayList<String> friendlist= new ArrayList<String>();
 	Context context;
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/events_pop_add.php";
@@ -194,4 +201,51 @@ public class EventViewActivity extends Activity {
                 }
 		}
 	}
+
+//    public class AttachmentBaseAdapter extends BaseAdapter {
+//
+//  	  private final LayoutInflater mInflater;
+//
+//  	  public AttachmentBaseAdapter(Context context) {
+//  	   mInflater = LayoutInflater.from(context);
+//  	  }
+//
+//  	  
+//  	  public int getCount() {
+//  	   return friendlist.size();
+//  	  }
+//
+//  	  
+//  	  public Object getItem(int position) {
+//  	   return friendlist.get(position);
+//  	  }
+//
+//  	  
+//  	  public long getItemId(int position) {
+//  	   return position;
+//  	  }
+//
+//  	  public View getView(final int position, View convertView, ViewGroup parent) {
+//  	   final ViewHolder holder;
+//  	  
+//  	   if (convertView == null) {
+//  	    convertView = mInflater.inflate(R.layout.base_layout, null);
+//  	    holder = new ViewHolder();
+//  	    holder.friendname = (TextView) convertView.findViewById(R.id.tv_videolistname);
+//  	  
+//  	    convertView.setTag(holder);
+//  	   } else {
+//  	    holder = (ViewHolder) convertView.getTag();
+//  	   }
+//  	   holder.friendname.setText(friendlist.get(position));
+//
+//  	   return convertView;
+//  	  }
+//
+//  	  class ViewHolder {
+//  	   TextView friendname;
+//  	  }
+//
+//  	 }
+
 }

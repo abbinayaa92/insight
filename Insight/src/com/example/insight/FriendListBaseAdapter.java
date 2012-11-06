@@ -53,7 +53,7 @@ public class FriendListBaseAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		if(friendlist.get(position).getName().equals(""))
+		if(friendlist.get(position).getName()==null || friendlist.get(position).getName().equals(""))
 			holder.txtTitle.setText(friendlist.get(position).getEmail());
 		else
 			holder.txtTitle.setText(friendlist.get(position).getName());

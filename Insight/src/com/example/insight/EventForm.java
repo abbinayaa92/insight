@@ -124,10 +124,18 @@ public class EventForm extends Activity {
         addevent.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	url_list.clear();
+            	if(attachment_list.size()>0)
+            	{
             	for(int i=0;i<attachment_list.size();i++)
             	{
             		UploadVid doUpload = new UploadVid(context, callingActivity,attachment_list.get(i));
                     doUpload.execute();
+            	}
+            	}
+            	else
+            	{
+            		addTest newevent = new addTest(context, callingActivity);
+            		newevent.execute();
             	}
             	
             } 

@@ -5,6 +5,17 @@
     android:background="#000000"
     android:orientation="vertical">
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.92"
+        android:orientation="vertical" >
+        
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
     <TextView
         android:id="@+id/EventNameinfo"
         android:layout_width="wrap_content"
@@ -134,6 +145,15 @@
         android:background="#ffffff"
         android:src="@drawable/videothumbnail"/>
     
+    <ListView
+        android:id="@+id/attendees"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" >
+    </ListView>
+    
+     </LinearLayout>
+     </ScrollView>
+     
      <Button
         android:id="@+id/AttendEvent"
         android:layout_width="wrap_content"
