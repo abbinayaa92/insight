@@ -17,7 +17,9 @@
             android:id="@+id/FriendSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Type to search friends"
+            android:hint="Type to search friends"  
+       		android:background="#000000"
+       		android:textColor="#ffffff"
             android:singleLine="true"
             android:textSize="20sp" /> 
      
