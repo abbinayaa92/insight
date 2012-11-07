@@ -40,7 +40,7 @@ public class Playvid extends Activity {
            // urlpath="http://137.132.82.133/pg2/uploads/VID-20121104-00003.3GP";
             Bundle extras = getIntent().getExtras();
             urlpath=extras.getString("url");
-            
+            Log.d("url path in plavid",urlpath);
             if(urlpath.endsWith(".jpg") || urlpath.endsWith(".png") || urlpath.endsWith(".gif") || urlpath.endsWith(".bmp")|| urlpath.endsWith(".tif"))
             {
             	vid.setVisibility(View.GONE);

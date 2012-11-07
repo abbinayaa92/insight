@@ -53,7 +53,7 @@ public final class R {
         public static final int LoginButton=0x7f08001c;
         public static final int LoginEmail=0x7f08001b;
         public static final int ProgressLayout=0x7f080031;
-        public static final int Sync=0x7f080042;
+        public static final int Sync=0x7f080043;
         public static final int Timeinfo=0x7f08000c;
         public static final int Upload=0x7f08002c;
         public static final int Venue=0x7f080007;
@@ -62,7 +62,7 @@ public final class R {
         public static final int attendees=0x7f08000f;
         public static final int bStart=0x7f080035;
         public static final int bStop=0x7f080036;
-        public static final int create_newevent=0x7f080040;
+        public static final int create_newevent=0x7f080041;
         public static final int dateSliderButLayout=0x7f080022;
         public static final int dateSliderCancelButton=0x7f080024;
         public static final int dateSliderMainLayout=0x7f080021;
@@ -81,7 +81,7 @@ public final class R {
         public static final int mark_close_button=0x7f08003e;
         public static final int mark_snippet=0x7f08003d;
         public static final int mark_title=0x7f08003c;
-        public static final int menu_settings=0x7f080041;
+        public static final int menu_settings=0x7f080042;
         public static final int model=0x7f080038;
         public static final int myfilterButton=0x7f080002;
         public static final int newEventDate=0x7f080028;
@@ -93,7 +93,8 @@ public final class R {
         public static final int sampleSize=0x7f080037;
         public static final int samples_tocollect=0x7f08003a;
         public static final int separator=0x7f08000d;
-        public static final int setting=0x7f08003f;
+        public static final int setting=0x7f080040;
+        public static final int signFriendName=0x7f08003f;
         public static final int tabhost=0x7f080019;
         public static final int tbServer=0x7f080034;
         public static final int textView1=0x7f08000b;
@@ -120,6 +121,7 @@ public final class R {
         public static final int main=0x7f03000e;
         public static final int markview=0x7f03000f;
         public static final int scroller=0x7f030010;
+        public static final int singedlistadapter=0x7f030011;
     }
     public static final class menu {
         public static final int activity_event=0x7f070000;

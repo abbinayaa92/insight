@@ -1,29 +1,42 @@
 package com.example.insight;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.insight.EventForm.AttachmentBaseAdapter;
 import com.example.insight.EventForm.addTest;
 import com.example.insight.EventForm.AttachmentBaseAdapter.ViewHolder;
+import com.example.insight.FriendActivity.getf;
 import com.example.insight.datamodel.Event;
 import com.example.insight.datamodel.Eventlist;
+import com.example.insight.datamodel.Friend;
+import com.example.insight.datamodel.FriendList;
 import com.example.insight.datamodel.InsightGlobalState;
 import com.example.insight.datamodel.Event.EventDateCompare;
 import com.example.insight.datamodel.Event.EventLocCompare;
 import com.example.insight.datamodel.Event.EventPopCompare;
+import com.example.insight.datamodel.SignedFriends;
+import com.google.gson.Gson;
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +49,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -48,9 +62,10 @@ public class EventViewActivity extends Activity {
 	private TextView title, desc, venue,date, time;
 	private Button attendevent;
 	private AlertDialog alert;
+	private ListView signlist;
 	private ImageView vid;
 	ArrayList<String> multimedia=new ArrayList<String>();
-	ArrayList<String> friendlist= new ArrayList<String>();
+	ArrayList<SignedFriends> friendlist= new ArrayList<SignedFriends>();
 	Context context;
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/events_pop_add.php";
@@ -68,6 +83,7 @@ public class EventViewActivity extends Activity {
         date= (TextView) findViewById(R.id.Dateinfo);
         time= (TextView) findViewById(R.id.Timeinfo);
         attendevent =(Button) findViewById(R.id.AttendEvent);
+        signlist=(ListView)findViewById(R.id.attendees);
         globalState = (InsightGlobalState) getApplication();
         vid =(ImageView)findViewById(R.id.thumbnail);
 		event = globalState.getEvents();
@@ -77,6 +93,10 @@ public class EventViewActivity extends Activity {
 		date.setText(event.getDate());
 		desc.setText(event.getDescription());
 		time.setText(event.getTime());
+		friendlist= event.getFriend_id();
+		Log.d("signed list", "size:"+friendlist.size());
+		FriendAttachmentBaseAdapter adap= new FriendAttachmentBaseAdapter(context);
+		signlist.setAdapter(adap);
 		vid.setVisibility(View.GONE);
 		
 		for(int i=0;i<event.getMult().size();i++)
@@ -202,50 +222,153 @@ public class EventViewActivity extends Activity {
 		}
 	}
 
-//    public class AttachmentBaseAdapter extends BaseAdapter {
-//
-//  	  private final LayoutInflater mInflater;
-//
-//  	  public AttachmentBaseAdapter(Context context) {
-//  	   mInflater = LayoutInflater.from(context);
-//  	  }
-//
-//  	  
-//  	  public int getCount() {
-//  	   return friendlist.size();
-//  	  }
-//
-//  	  
-//  	  public Object getItem(int position) {
-//  	   return friendlist.get(position);
-//  	  }
-//
-//  	  
-//  	  public long getItemId(int position) {
-//  	   return position;
-//  	  }
-//
-//  	  public View getView(final int position, View convertView, ViewGroup parent) {
-//  	   final ViewHolder holder;
-//  	  
-//  	   if (convertView == null) {
-//  	    convertView = mInflater.inflate(R.layout.base_layout, null);
-//  	    holder = new ViewHolder();
-//  	    holder.friendname = (TextView) convertView.findViewById(R.id.tv_videolistname);
-//  	  
-//  	    convertView.setTag(holder);
-//  	   } else {
-//  	    holder = (ViewHolder) convertView.getTag();
-//  	   }
-//  	   holder.friendname.setText(friendlist.get(position));
-//
-//  	   return convertView;
-//  	  }
-//
-//  	  class ViewHolder {
-//  	   TextView friendname;
-//  	  }
-//
-//  	 }
+    public class FriendAttachmentBaseAdapter extends BaseAdapter {
+
+  	  private final LayoutInflater mInflater;
+
+  	  public FriendAttachmentBaseAdapter(Context context) {
+  	   mInflater = LayoutInflater.from(context);
+  	  }
+
+  	  
+  	  public int getCount() {
+  	   return friendlist.size();
+  	  }
+
+  	  
+  	  public Object getItem(int position) {
+  	   return friendlist.get(position);
+  	  }
+
+  	  
+  	  public long getItemId(int position) {
+  	   return position;
+  	  }
+
+  	  public View getView(final int position, View convertView, ViewGroup parent) {
+  	   final ViewHolder holder;
+  	  
+  	   if (convertView == null) {
+  	    convertView = mInflater.inflate(R.layout.singedlistadapter, null);
+  	    holder = new ViewHolder();
+  	    holder.friendname = (TextView) convertView.findViewById(R.id.signFriendName);
+  	  
+  	    convertView.setTag(holder);
+  	   } else {
+  	    holder = (ViewHolder) convertView.getTag();
+  	   }
+  	   holder.friendname.setText(friendlist.get(position).getFriend_email());
+
+  	 holder.friendname.setOnClickListener(new View.OnClickListener() {
+ 	    
+ 	    public void onClick(View v) {
+ 	    	String url = "http://137.132.82.133/pg2/users_read_ind.php?id=" + friendlist.get(position).getFriend_id();
+			ProgressDialog dialog = new ProgressDialog(context);
+			dialog.setMessage("Getting Friend Info...");
+			dialog.setCancelable(false);
+			dialog.setCanceledOnTouchOutside(false);
+			dialog.show();
+			getf getProjectTask = new getf(context, callingActivity, dialog);
+			getProjectTask.execute(url);
+ 	    }
+ 	   });
+ 	   return convertView;
+ 	  }
+
+  	  class ViewHolder {
+  	   TextView friendname;
+  	  }
+
+  	 }
+    
+    public class getf extends AsyncTask<String, Void, String> {
+
+    	private final Context context;
+    	private final Activity callingActivity;
+    	private final ProgressDialog dialog;
+
+    	public getf(Context context, Activity callingActivity, ProgressDialog dialog) {
+    		this.context = context;
+    		this.callingActivity = callingActivity;
+    		this.dialog = dialog;
+    	}
+
+    	@Override
+    	protected void onPreExecute() {
+    		if (dialog != null) {
+    			if (!this.dialog.isShowing()) {
+    				this.dialog.setMessage("Getting Friend Info...");
+    				this.dialog.setCancelable(false);
+    				this.dialog.setCanceledOnTouchOutside(false);
+    				this.dialog.show();
+    			}
+    		}
+    	}
+
+    	@Override
+    	protected String doInBackground(String... urls) {
+    		String response = "";
+    		for (String url : urls) {
+    			DefaultHttpClient client = new DefaultHttpClient();
+    			HttpGet httpGet = new HttpGet(url);
+    			try {
+    				HttpResponse execute = client.execute(httpGet);
+    				InputStream content = execute.getEntity().getContent();
+
+    				BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+    				String s = "";
+    				while ((s = buffer.readLine()) != null) {
+    					response += s;
+    				}
+
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+    		}
+    		return response;
+    	}
+
+    	@Override
+    	protected void onPostExecute(String result) {
+    		try {
+    			if (dialog != null && this.dialog.isShowing()) {
+    				this.dialog.dismiss();
+    			}
+    		} catch (Exception e) {
+    		}
+    		try {
+    			Log.d("get friend detail result", result.toString());
+    			JSONObject resultJson = new JSONObject(result);
+    			if (resultJson.getInt("success") ==1 ) {
+    				JSONArray friendJson = new JSONArray(resultJson.getString("users"));
+    				Gson gson = new Gson();
+    				Friend friend1 = gson.fromJson(friendJson.getJSONObject(0).toString(), Friend.class);
+    				InsightGlobalState globalState = (InsightGlobalState) callingActivity.getApplication();
+    				FriendList list= globalState.getFriendlist();
+    				for(int i=0;i<list.size();i++)
+    				{
+    					if(list.get(i).getId()==friend1.getId())
+    					{
+    						Log.d("in match",friend1.getEmail());
+    						friend1.setName(list.get(i).getName());
+    						friend1.setPhone(list.get(i).getPhone());
+    					}
+    				}
+    				globalState.setFriends(friend1);
+
+    					Intent eventViewIntent = new Intent(context, FriendViewActivity.class);
+    					callingActivity.startActivity(eventViewIntent);
+    					//callingActivity.finish();
+
+    			} else {
+    			}
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    }
+        
 
 }
+
+

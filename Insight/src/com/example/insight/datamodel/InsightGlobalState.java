@@ -6,12 +6,13 @@ public class InsightGlobalState extends Application {
 
 	private String email;
 	private String id;
-	private int coorx;
-	private int coory;
-	private double lat;
-	private double lon;
-	private String floor_id;
-	private String floor_name;
+	private int coorx=550;
+	private int coory=75;
+	private int flag=0;
+	private double lat=1295123;
+	private double lon=103773873;
+	private String floor_id="COM1_L1.jpg";
+	private String floor_name="COM1_L1_37";
 	private Eventlist eventlist= new Eventlist();
 	private Event events= new Event();
 	private FriendList friendlist= new FriendList();
@@ -95,5 +96,11 @@ public class InsightGlobalState extends Application {
 	}
 	public void setSignedup(Eventlist signedup) {
 		this.signedup = signedup;
+	}
+	public int getFlag() {
+		return flag;
+	}
+	public void setFlag(int flag) {
+		this.flag = flag;
 	}
 }

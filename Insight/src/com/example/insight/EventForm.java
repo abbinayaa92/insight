@@ -60,8 +60,8 @@ public class EventForm extends Activity {
 	Activity callingActivity;
 	JSONParser jsonParser = new JSONParser();
 	ListView attachments;
-	public static ArrayList<String> attachment_list = new ArrayList<String>();
-	public static ArrayList<String> url_list = new ArrayList<String>();
+	public static ArrayList<String> attachment_list;
+	public static ArrayList<String> url_list ;
 	private String url = "http://137.132.82.133/pg2/events_add.php";
 	private static final String TAG_SUCCESS = "success";
 	static final int DEFAULTDATESELECTOR_ID = 0;
@@ -89,8 +89,8 @@ public class EventForm extends Activity {
         
         obj=(InsightGlobalState)getApplication();
         
-       
-        
+        attachment_list = new ArrayList<String>();
+        url_list = new ArrayList<String>();
         /* Author : Puneet	
          *  Date : 18/10/2012	
          *  Description : Populating the EventVenue spinner
@@ -235,7 +235,7 @@ public class EventForm extends Activity {
 	            params.add(new BasicNameValuePair("title", title.getText().toString())); //put the text of the title textbox here instead of "teting testing events"
 	            params.add(new BasicNameValuePair("description", desc.getText().toString()));
 	            params.add(new BasicNameValuePair("date", date.getText().toString()));
-	            params.add(new BasicNameValuePair("time", "00:00"));
+	            params.add(new BasicNameValuePair("time", time.getCurrentHour()+":"+time.getCurrentMinute()));
 	            params.add(new BasicNameValuePair("venue", venue.getSelectedItem().toString()));
 	          
 	            //for coorx and coory need to call the location server to find coordinates of venue and add it here instead of the values entered
@@ -296,8 +296,9 @@ public class EventForm extends Activity {
 					}
                 	
                     
-                Intent eventsViewIntent = new Intent(context, HomeActivity.class);
-				callingActivity.startActivity(eventsViewIntent);
+                Intent HomeIntent = new Intent(context, HomeActivity.class);
+    			HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    			callingActivity.startActivity(HomeIntent);
 				callingActivity.finish();
 		}
 	}

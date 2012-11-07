@@ -82,7 +82,7 @@ public class EventActivity extends Activity {
 	JSONParser jsonParser = new JSONParser();
 	private String url = "http://137.132.82.133/pg2/users_add.php";
 	private static final String TAG_SUCCESS = "success";
-	private int flag=0;
+	//private int flag=0;
 	
 	
     @Override
@@ -161,7 +161,6 @@ public class EventActivity extends Activity {
 		});
         
         String url = "http://137.132.82.133/pg2/events_read.php";
-        flag=0;
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		ProgressDialog dialog = new ProgressDialog(context1);
 		dialog.setMessage("Retreiving events...");
@@ -188,8 +187,9 @@ public class EventActivity extends Activity {
 				 */
 
 				int eventId = selectedEvent.getId();
+				int user_id=Integer.parseInt(globalState.getId());
 				Log.d("event title",Integer.toString(eventId));
-				String url = "http://137.132.82.133/pg2/events_read_ind.php?id=" + eventId;
+				String url = "http://137.132.82.133/pg2/events_read_ind.php?id=" + eventId+ "&user_id="+user_id;
 				ProgressDialog dialog = new ProgressDialog(context1);
 				dialog.setMessage("Getting Event Info...");
 				dialog.setCancelable(false);
@@ -219,7 +219,6 @@ public class EventActivity extends Activity {
 			return true;
 		case R.id.create_newevent:
 			startActivity(new Intent(context1,EventForm.class));
-			callingActivity.finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -291,8 +290,12 @@ public class EventActivity extends Activity {
 				globalState.setLon(longitude);
 				addUser newevent = new addUser(context, callingActivity);
 				newevent.execute();
-				flag=1;
+				globalState.setFlag(1);
 				ProgressDialog dialog = new ProgressDialog(context1);
+				dialog.setMessage("Retreiving events...");
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
+				dialog.show();
 				Test projectListTask = new Test(context1, callingActivity,dialog);
 				projectListTask.execute("http://137.132.82.133/pg2/events_read.php");
 			}
@@ -431,7 +434,7 @@ public class EventActivity extends Activity {
 				selected_events=new ArrayList<Event>();
 				int xcoor = globalState.getCoorx();
 				int ycoor = globalState.getCoory();
-				if(flag==1)
+				if(globalState.getFlag()==1)
 				{
 				String floor_id=globalState.getFloor_id();
 				Log.d("floorid","hello"+floor_id);
@@ -450,7 +453,7 @@ public class EventActivity extends Activity {
 							
 				}
 				}
-				else if(flag==0)
+				else if(globalState.getFlag()==0)
 					selected_events=events;
 				
 				for(int i=0;i<selected_events.size();i++)

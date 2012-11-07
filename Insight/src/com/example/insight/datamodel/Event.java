@@ -17,6 +17,7 @@ public class Event {
 	private double distance;
 	private int pop;
 	private ArrayList<Multimedia> mult= new ArrayList<Multimedia>();
+	private ArrayList<SignedFriends> friend_id= new ArrayList<SignedFriends>();
 	
 	public String getTitle() {
 		return title;
@@ -94,6 +95,13 @@ public class Event {
 	}
 	public void setMult(ArrayList<Multimedia> mult) {
 		this.mult = mult;
+	}
+
+	public ArrayList<SignedFriends> getFriend_id() {
+		return friend_id;
+	}
+	public void setFriend_id(ArrayList<SignedFriends> friend_id) {
+		this.friend_id = friend_id;
 	}
 
 	public class EventLocCompare implements Comparator<Event> {
