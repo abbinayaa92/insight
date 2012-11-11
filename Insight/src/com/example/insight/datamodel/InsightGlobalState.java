@@ -11,8 +11,8 @@ public class InsightGlobalState extends Application {
 	private int flag=0;
 	private double lat=1295123;
 	private double lon=103773873;
-	private String floor_id="COM1_L1.jpg";
-	private String floor_name="COM1_L1_37";
+	private String floor_id="";
+	private String floor_name="";
 	private Eventlist eventlist= new Eventlist();
 	private Event events= new Event();
 	private FriendList friendlist= new FriendList();

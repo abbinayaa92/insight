@@ -80,6 +80,7 @@ public class EventActivity extends Activity {
 	private ArrayList<Event> selected_events;
 	private ArrayList<Event> filtered_events= new ArrayList<Event>();
 	JSONParser jsonParser = new JSONParser();
+	boolean flagall=false;
 	private String url = "http://137.132.82.133/pg2/users_add.php";
 	private static final String TAG_SUCCESS = "success";
 	//private int flag=0;
@@ -99,7 +100,7 @@ public class EventActivity extends Activity {
         
         registerReceiver(broadcastReceiver, new IntentFilter("FingerPrint_LOCATION_UPDATE"));
         
-        final CharSequence[] items = { "Location", "Popularity", "Date" };
+        final CharSequence[] items = { "Location", "Popularity", "Date" , "All" };
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context1);
 		builder.setTitle("Sort By");
@@ -111,22 +112,36 @@ public class EventActivity extends Activity {
 				case 0:
 					Collections.sort(selected_events, newevent.new EventLocCompare());
 					Collections.reverse(selected_events);
+					eventlistba = new eventListBaseAdapter(context1, selected_events);
+					eventListView.setAdapter(eventlistba);
+					flagall=false;
 					break;
 				case 1:
 					Collections.sort(selected_events, newevent.new EventPopCompare());
 					//Collections.reverse(selected_events);
 					for(int i=0;i<selected_events.size();i++)
 						Log.d("event pop:", selected_events.get(i).getPop()+"  event title:"+ selected_events.get(i).getTitle());
+					eventlistba = new eventListBaseAdapter(context1, selected_events);
+					eventListView.setAdapter(eventlistba);
+					flagall=false;
 					break;
 				case 2:
 					Collections.sort(selected_events, newevent.new EventDateCompare());
+					eventlistba = new eventListBaseAdapter(context1, selected_events);
+					eventListView.setAdapter(eventlistba);
 					Collections.reverse(selected_events);
-					
+					flagall=false;
+					break;
+				case 3:
+					Collections.sort(events, newevent.new EventDateCompare());
+					Collections.reverse(events);
+					eventlistba = new eventListBaseAdapter(context1,events);
+					eventListView.setAdapter(eventlistba);
+					flagall=true;
 					break;
 				}
 				
-				eventlistba = new eventListBaseAdapter(context1, selected_events);
-				eventListView.setAdapter(eventlistba);
+				
 			}
 		});
 		alert = builder.create();
@@ -148,10 +163,23 @@ public class EventActivity extends Activity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				int textLength2 = Eventsearch.getText().length();
 				filtered_events.clear();
+				if(flagall==false)
+				{
 				for (int i = 0; i < selected_events.size(); i++) {
 					if (textLength2 <= selected_events.get(i).getTitle().length()) {
 						if (Eventsearch.getText().toString().equalsIgnoreCase((String) selected_events.get(i).getTitle().subSequence(0, textLength2))) {
 							filtered_events.add(selected_events.get(i));
+						}
+					}
+				}
+				}
+				else if(flagall==true)
+				{
+					for (int i = 0; i < events.size(); i++) {
+						if (textLength2 <= events.get(i).getTitle().length()) {
+							if (Eventsearch.getText().toString().equalsIgnoreCase((String) events.get(i).getTitle().subSequence(0, textLength2))) {
+								filtered_events.add(events.get(i));
+							}
 						}
 					}
 				}
@@ -219,6 +247,17 @@ public class EventActivity extends Activity {
 			return true;
 		case R.id.create_newevent:
 			startActivity(new Intent(context1,EventForm.class));
+			return true;
+		case R.id.refresh_events:
+			String url = "http://137.132.82.133/pg2/events_read.php";
+			List<NameValuePair> params = new LinkedList<NameValuePair>();
+			ProgressDialog dialog = new ProgressDialog(context1);
+			dialog.setMessage("Retreiving events...");
+			dialog.setCancelable(false);
+			dialog.setCanceledOnTouchOutside(false);
+			dialog.show();
+			Test projectListTask = new Test(context1, callingActivity,dialog);
+			projectListTask.execute(url);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

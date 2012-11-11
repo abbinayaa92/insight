@@ -1,5 +1,6 @@
 package com.example.insight;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -27,6 +28,7 @@ public class Playvid extends Activity {
 
 	String urlpath;
 	Context context;
+	Bitmap mIcon11 = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,10 +107,12 @@ public class Playvid extends Activity {
 
     protected Bitmap doInBackground(String... urls) {
         String urldisplay = urls[0];
-        Bitmap mIcon11 = null;
+       
         try {
             InputStream in = new java.net.URL(urldisplay).openStream();
-            mIcon11 = BitmapFactory.decodeStream(in);
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inSampleSize = 8;
+            mIcon11 = BitmapFactory.decodeStream(new FlushedInputStream(in));
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
             e.printStackTrace();
@@ -128,4 +132,45 @@ public class Playvid extends Activity {
         //pDlg.dismiss();
         bmImage.setImageBitmap(result);
     }}
+    
+    static class FlushedInputStream extends FilterInputStream {
+        public FlushedInputStream(InputStream inputStream) {
+            super(inputStream);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            long totalBytesSkipped = 0L;
+            while (totalBytesSkipped < n) {
+                long bytesSkipped = in.skip(n - totalBytesSkipped);
+                if (bytesSkipped == 0L) {
+                    int b = read();
+                    if (b < 0) {
+                        break;  // we reached EOF
+                    } else {
+                        bytesSkipped = 1; // we read one byte
+                    }
+                }
+                totalBytesSkipped += bytesSkipped;
+            }
+            return totalBytesSkipped;
+        }
+    }
+    
+    @Override
+    public void onDestroy()
+    {   
+        Cleanup();
+        super.onDestroy();
+    }
+
+    private void Cleanup()
+    {    
+    	if(mIcon11!=null)
+    	{
+    	mIcon11.recycle();
+        System.gc();
+        Runtime.getRuntime().gc();  
+    	}
+    }
 }

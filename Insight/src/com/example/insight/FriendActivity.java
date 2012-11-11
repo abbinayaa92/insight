@@ -89,8 +89,14 @@ public class FriendActivity extends Activity {
 				int textLength2 = friendSearch.getText().length();
 				filteredNameList.clear();
 				for (int i = 0; i < contactList.size(); i++) {
-					if (textLength2 <= contactList.get(i).getName().length()) {
+					if (contactList.get(i).getName()!=null && (!contactList.get(i).getName().equals("")) && textLength2 <= contactList.get(i).getName().length()) {
 						if (friendSearch.getText().toString().equalsIgnoreCase((String) contactList.get(i).getName().subSequence(0, textLength2))) {
+							filteredNameList.add(contactList.get(i));
+						}
+					}
+					else if(textLength2 <= contactList.get(i).getEmail().length())
+					{
+						if (friendSearch.getText().toString().equalsIgnoreCase((String) contactList.get(i).getEmail().subSequence(0, textLength2))) {
 							filteredNameList.add(contactList.get(i));
 						}
 					}

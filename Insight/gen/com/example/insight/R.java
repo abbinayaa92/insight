@@ -53,7 +53,7 @@ public final class R {
         public static final int LoginButton=0x7f08001c;
         public static final int LoginEmail=0x7f08001b;
         public static final int ProgressLayout=0x7f080031;
-        public static final int Sync=0x7f080043;
+        public static final int Sync=0x7f080044;
         public static final int Timeinfo=0x7f08000c;
         public static final int Upload=0x7f08002c;
         public static final int Venue=0x7f080007;
@@ -81,7 +81,7 @@ public final class R {
         public static final int mark_close_button=0x7f08003e;
         public static final int mark_snippet=0x7f08003d;
         public static final int mark_title=0x7f08003c;
-        public static final int menu_settings=0x7f080042;
+        public static final int menu_settings=0x7f080043;
         public static final int model=0x7f080038;
         public static final int myfilterButton=0x7f080002;
         public static final int newEventDate=0x7f080028;
@@ -89,6 +89,7 @@ public final class R {
         public static final int newEventTime=0x7f08002a;
         public static final int newEventTitle=0x7f080026;
         public static final int newEventVenue=0x7f080029;
+        public static final int refresh_events=0x7f080042;
         public static final int remove_button=0x7f080020;
         public static final int sampleSize=0x7f080037;
         public static final int samples_tocollect=0x7f08003a;

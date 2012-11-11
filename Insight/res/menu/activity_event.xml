@@ -12,4 +12,9 @@
         android:title="CREATE EVENT">
     </item>
     
+    <item
+        android:id="@+id/refresh_events"
+        android:showAsAction="always"
+        android:title="REFRESH EVENTS">
+    </item>
 </menu>
